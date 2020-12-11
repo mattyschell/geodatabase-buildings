@@ -1,5 +1,6 @@
-CREATE or replace PROCEDURE ADD_BUILDING_CONSTR 
-AS
+CREATE or replace PROCEDURE ADD_BUILDING_CONSTR (
+    p_table_name            VARCHAR2 DEFAULT 'BUILDING'
+) AS
 
         --mschell! 20200925
 
@@ -15,8 +16,8 @@ BEGIN
             || '    owner = :p1 '
             || 'and table_name = :p2 ';
     
-    execute immediate psql into addtable using 'BLDG'
-                                              ,'BUILDING';
+    execute immediate psql into addtable using user
+                                              ,UPPER(p_table_name);
 
     -- building identification numbers are boro code (1-5) million
     -- dcp temporary bins are boro code (1-5) || 8 || xxxxx and are not allowed
@@ -35,13 +36,15 @@ BEGIN
 
     EXECUTE IMMEDIATE psql;
 
-    -- buildings should be built between the date of dutch settlement and present
+    -- buildings should be built between the date of dutch settlement and 2100
+    -- Reminder: dynamic values like Current Year are not constraints
+    --           we'll get a little more specific in QA scripting
     -- null is ok for now.  Get outta here with 0 though 
     psql := 'ALTER TABLE ' || addtable || ' '
          || 'ADD CONSTRAINT ' || addtable || 'CONSTRUCTION_YEAR '
          || 'CHECK '
          || '(    construction_year > 1626 '
-         || ' and construction_year <= to_number(to_char(sysdate, ''YYYY'')) + 1  '
+         || ' and construction_year < 2100 '
          || ')';
 
     EXECUTE IMMEDIATE psql;

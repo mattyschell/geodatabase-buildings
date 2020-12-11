@@ -1,9 +1,23 @@
 import sys
 import os
 import logging
+import pathlib
 
 import gdb
 import fc
+import cx_sde
+
+def fetchsql(whichsql
+            ,database):
+
+    sqlfilepath = pathlib.Path(__file__).parent \
+                                        .joinpath('sql_{0}'.format(database)) \
+                                        .joinpath(whichsql)
+        
+    with open(sqlfilepath, 'r') as sqlfile:
+        sql = sqlfile.read() 
+
+    return sql 
 
 
 if __name__ == "__main__":
@@ -39,7 +53,7 @@ if __name__ == "__main__":
     logger.info('tracking edits on {0}'.format(targetfcname))
     targetfc.trackedits()
 
-    for editor in editors.strip().split(',')
+    for editor in editors.strip().split(','):
         
         logger.info('granting edit privileges on {0} to {1}'.format(targetfcname
                                                                    ,editor))
@@ -60,26 +74,31 @@ if __name__ == "__main__":
 
     logger.info('adding doitt_id trigger to {0}'.format(targetfcname))
 
-    sdereturn = cx_sde.execute_immediate(self.sdeconn,
-                                         targetgdb.fetchsql('building_compiletrg.sql'))
+    sdereturn = cx_sde.execute_immediate(targetsdeconn,
+                                         fetchsql('compiletriggers.sql'
+                                                  ,targetgdb.database))
 
-    sdereturn = cx_sde.execute_immediate(self.sdeconn,
-                                         targetgdb.fetchsql('building_addtrg.sql'))
+    # todo: get oracle syntax outta here.  Requires pushing table name to SQL 
+    sdereturn = cx_sde.execute_immediate(targetsdeconn,
+                                         """begin ADD_BUILDING_TRIGGER('{0}'); end; """.format(targetfcname))
 
     logger.info('adding constraints to Add table of {0}'.format(targetfcname))
 
-    sdereturn = cx_sde.execute_immediate(self.sdeconn,
-                                         targetgdb.fetchsql('building_compilecons.sql'))
-
-    sdereturn = cx_sde.execute_immediate(self.sdeconn,
-                                         targetgdb.fetchsql('building_addcons.sql'))
+    sdereturn = cx_sde.execute_immediate(targetsdeconn,
+                                         fetchsql('compileconstraints.sql'
+                                                  ,targetgdb.database))
+                                                  
+    # todo: get oracle syntax outta here. Requires pushing table name to SQL
+    sdereturn = cx_sde.execute_immediate(targetsdeconn,
+                                         """begin ADD_BUILDING_CONSTR('{0}'); end; """.format(targetfcname))
 
     logger.info('updating statistics on {0}'.format(targetfcname))
 
     targetfc.analyze()
 
-    # not enabling archiving 
-    # https://pro.arcgis.com/en/pro-app/tool-reference/data-management/enable-archiving.htm
+    logger.info('enabling archiving (from today forward) on {0}'.format(targetfcname))
+
+    targetfc.enablearchiving()
 
     # creating versions like BLDG_DOITT_EDIT probably comes next but that is not
     # part of the import of a single feature class

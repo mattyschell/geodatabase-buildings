@@ -1,3 +1,0 @@
-BEGIN
-    ADD_BUILDING_CONSTR();
-END; 
