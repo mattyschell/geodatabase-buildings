@@ -2,14 +2,13 @@ import sys
 import os
 import logging
 
-# SET PYTHONPATH=C:\geodatabase-toiler\src\py
+# SET PYTHONPATH=C:\gis\geodatabase-toiler\src\py
 import gdb
 import fc
 
+
 if __name__ == "__main__":
 
-    #if len(sys.argv) != 3:
-    #    raise ValueError('Expected 2 inputs, notifyonsuccess flag and emails')
 
     targetfcname = sys.argv[1]
 

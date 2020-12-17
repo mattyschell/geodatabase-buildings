@@ -3,9 +3,11 @@ import os
 import logging
 import pathlib
 
+# SET PYTHONPATH=C:\gis\geodatabase-toiler\src\py
 import gdb
 import fc
 import cx_sde
+
 
 def fetchsql(whichsql
             ,database):
@@ -22,13 +24,9 @@ def fetchsql(whichsql
 
 if __name__ == "__main__":
 
-    #if len(sys.argv) != 3:
-    #    raise ValueError('Expected 2 inputs, notifyonsuccess flag and emails')
-
     targetfcname = sys.argv[1]
     sourcefc     = sys.argv[2]
     editors      = sys.argv[3]
-
 
     targetsdeconn = os.environ['SDEFILE']
     targetgdb = gdb.Gdb()
@@ -87,7 +85,7 @@ if __name__ == "__main__":
     sdereturn = cx_sde.execute_immediate(targetsdeconn,
                                          fetchsql('compileconstraints.sql'
                                                   ,targetgdb.database))
-                                                  
+
     # todo: get oracle syntax outta here. Requires pushing table name to SQL
     sdereturn = cx_sde.execute_immediate(targetsdeconn,
                                          """begin ADD_BUILDING_CONSTR('{0}'); end; """.format(targetfcname))

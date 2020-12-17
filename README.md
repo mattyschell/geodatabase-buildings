@@ -4,7 +4,7 @@ Code and helpers for maintaining New York City building footprints in a versione
 
 Dependencies: 
 
-   * ESRI ArcGIS Pro arcpy python 3.x 
+   * [ESRI ArcGIS Pro python 3.x](https://pro.arcgis.com/en/pro-app/arcpy/get-started/installing-python-for-arcgis-pro.htm) 
    * [geodatabase-toiler](https://github.com/mattyschell/geodatabase-toiler) on PYTHONPATH
 
 
