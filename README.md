@@ -8,10 +8,34 @@ Dependencies:
    * [geodatabase-toiler](https://github.com/mattyschell/geodatabase-toiler) on PYTHONPATH
 
 
-# Import Buildings
+# Import 
 
 ```bat
 > set SDEFILE=T:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
 > set PYTHONPATH=C:\geodatabase-toiler\src\py;C:\geodatabase-buildings
 > c:\Progra~1\ArcGIS\Pro\bin\Python\scripts\propy.bat import.py BUILDING C:\conns\bldg@geocdev.sde\BLDG.BUILDING "MSCHELL,BKNOWLES"
 ```
+
+# QA 
+
+```bat
+> set SDEFILE=T:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
+> set PYTHONPATH=C:\geodatabase-toiler\src\py;C:\geodatabase-buildings
+> c:\Progra~1\ArcGIS\Pro\bin\Python\scripts\propy.bat qa.py BUILDING 
+```
+
+
+# Export To GeoJSON
+
+Additional Dependency: 
+
+   * [ogr2ogr](https://gdal.org/programs/ogr2ogr.html) on PATH
+
+```bat
+> set SDEFILE=T:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
+> set PYTHONPATH=C:\geodatabase-toiler\src\py;C:\geodatabase-buildings
+> c:\Progra~1\ArcGIS\Pro\bin\Python\scripts\propy.bat export.py BUILDING 
+```
+
+
+
