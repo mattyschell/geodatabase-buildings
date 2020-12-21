@@ -21,3 +21,5 @@ echo notifying us of QA results on %TARGETFC% on %date% at %time% >> test_import
 %PROPY% %BUILDINGS%notify.py "import and QA of %TARGETFC% on %SDEFILE%" %NOTIFY%
 echo exporting %TARGETFC% to geojson on %date% at %time% >> %TARGETLOGDIR%test_import.log
 %PROPY% %BUILDINGS%export.py %TARGETFC%
+echo notifying us of export results on %date% at %time% >> test_import.log
+%PROPY% %BUILDINGS%notify.py "%TARGETFC% export" %NOTIFY%

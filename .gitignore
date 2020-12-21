@@ -150,3 +150,13 @@ scratch/
 
 #vs
 .vscode*
+
+#shapefolder
+*.cpg
+*.dbf
+*.prj
+*.sbn
+*.sbx
+*.shp
+*.shp.xml
+*.shx
