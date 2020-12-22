@@ -4,7 +4,7 @@ Code and helpers for maintaining New York City building footprints in a versione
 
 Dependencies: 
 
-   * [ESRI ArcGIS Pro python 3.x](https://pro.arcgis.com/en/pro-app/arcpy/get-started/installing-python-for-arcgis-pro.htm) 
+   * [ESRI ArcGIS P-ro python 3.x](https://pro.arcgis.com/en/pro-app/arcpy/get-started/installing-python-for-arcgis-pro.htm) 
    * [geodatabase-toiler](https://github.com/mattyschell/geodatabase-toiler) on PYTHONPATH
 
 
@@ -30,6 +30,9 @@ Dependencies:
 Additional Dependency: 
 
    * [ogr2ogr](https://gdal.org/programs/ogr2ogr.html) on PATH
+
+Consider repeatedly dumping this file to a drive that supports previous versions
+or to somewhere cloudy.
 
 ```bat
 > set SDEFILE=T:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
