@@ -84,4 +84,3 @@
 *.ppt  binary
 *.pptx binary
 *.pdf  binary
-*.geojson filter=lfs diff=lfs merge=lfs -text
