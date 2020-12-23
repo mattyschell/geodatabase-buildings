@@ -8,7 +8,8 @@ import gdb
 import fc
 import cx_sde
 
-def shp2json(fcname
+def shp2json(fcdir
+            ,fcname
             ,precision=6):
 
     # 6 digits = approximately 1/10 meter
@@ -46,7 +47,13 @@ def shp2json(fcname
           """ ,geometry AS geometry """ \
           """ from {0} ORDER BY bin " """.format(fcname)
     
-    callcmd =  f"ogr2ogr -dialect SQLite -sql {sql} -t_srs EPSG:4326 -f GeoJSON -lco COORDINATE_PRECISION={precision} {fcname}.geojson {fcname}.shp "
+    inshp = os.path.join(fcdir
+                        ,'{0}.{1}'.format(fcname,'shp'))
+
+    outjson = os.path.join(fcdir
+                          ,'{0}.{1}'.format(fcname,'geojson'))
+
+    callcmd =  f"ogr2ogr -dialect SQLite -sql {sql} -t_srs EPSG:4326 -f GeoJSON -lco COORDINATE_PRECISION={precision} {outjson} {inshp} "
 
     #print(callcmd)
     
@@ -85,7 +92,11 @@ def main(sourcesdeconn
                         ,'{0}.{1}'.format(sourcefcname.lower()
                                          ,'shp'))
 
-    main_exit_code = shp2json(sourcefcname)
+    main_exit_code = shp2json(targetdir
+                             ,'{0}'.format(sourcefcname.lower()))
+
+    deleteshp(targetdir
+             ,sourcefcname) 
 
     return main_exit_code
 
