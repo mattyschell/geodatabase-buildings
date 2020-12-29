@@ -59,22 +59,50 @@ def shp2json(fcdir
     
     exit_code = call(callcmd)
 
-    return exit_code
+    if exit_code == 0:
+        return str(exit_code)
+    else:
+        return 'export failed with {0} using {1}'.format(str(exit_code)
+                                                        ,callcmd)
 
 
-def deleteshp(shapedir
-             ,name):
+def deletefiles(filedir
+               ,filename
+               ,fileexts):
 
-    exts = ['shp','dbf','shx','cpg','sbn','sbx','shp.xml','prj']
+    for fileext in fileexts:
 
-    for ext in exts:
+        if os.path.exists(os.path.join(filedir
+                                      ,'{0}.{1}'.format(filename,fileext))):
 
-        if os.path.exists(os.path.join(shapedir
-                                      ,'{0}.{1}'.format(name,ext))):
+            os.remove(os.path.join(filedir
+                                  ,'{0}.{1}'.format(filename,fileext)))
 
-            os.remove(os.path.join(shapedir
-                                  ,'{0}.{1}'.format(name,ext)))
+def deleteshp(shpdir
+             ,shpname):
 
+    shpexts = ['shp'
+              ,'dbf'
+              ,'shx'
+              ,'cpg'
+              ,'sbn'
+              ,'sbx'
+              ,'shp.xml'
+              ,'prj']
+
+    deletefiles(shpdir
+               ,shpname
+               ,shpexts)
+
+def deletejson(jsondir
+              ,jsonname):
+
+    jsonexts = ['geojson']
+
+    deletefiles(jsondir
+               ,jsonname
+               ,jsonexts)
+             
 
 def main(sourcesdeconn
         ,sourcefcname
@@ -92,11 +120,16 @@ def main(sourcesdeconn
                         ,'{0}.{1}'.format(sourcefcname.lower()
                                          ,'shp'))
 
+    deletejson(targetdir
+              ,sourcefcname)
+              
     main_exit_code = shp2json(targetdir
                              ,'{0}'.format(sourcefcname.lower()))
 
-    deleteshp(targetdir
-             ,sourcefcname) 
+    if main_exit_code == '0':
+
+        deleteshp(targetdir
+                 ,sourcefcname) 
 
     return main_exit_code
 
@@ -115,10 +148,10 @@ if __name__ == '__main__':
                     ,psourcefcname
                     ,os.path.dirname(os.path.realpath(__file__)))
 
-    if exit_code == 0:
+    if exit_code == '0':
         logging.info('Successfully exported {0}'.format(psourcefcname))
     else:
-        logging.error('Failed to export {0}'.format(psourcefcname))
+        logging.error('Failed to export: {0}'.format(exit_code))
 
     
 
