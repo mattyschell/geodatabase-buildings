@@ -49,26 +49,27 @@ if __name__ == "__main__":
 
     # columns should already exist
     logger.info('tracking edits on {0}'.format(targetfcname))
-    targetfc.trackedits()
+    output = targetfc.trackedits()
 
     for editor in editors.strip().split(','):
         
         logger.info('granting edit privileges on {0} to {1}'.format(targetfcname
                                                                    ,editor))
-        targetfc.grantprivileges(editor)
+        output = targetfc.grantprivileges(editor)
 
     logger.info('indexing {0} on {1}'.format('BIN'
                                              ,targetfcname))
-    targetfc.index('BIN')
+    output = targetfc.index('BIN')
 
     logger.info('indexing {0} on {1}'.format('BASE_BBL'
                                              ,targetfcname))
-    targetfc.index('BASE_BBL')
+    
+    output = targetfc.index('BASE_BBL')
 
     # reminder: "unique indexes cant be specified for multiversioned tables"
     logger.info('indexing {0} on {1}'.format('DOITT_ID'
                                              ,targetfcname))
-    targetfc.index('DOITT_ID')
+    output = targetfc.index('DOITT_ID')
 
     logger.info('adding doitt_id trigger to {0}'.format(targetfcname))
 
@@ -92,11 +93,11 @@ if __name__ == "__main__":
 
     logger.info('updating statistics on {0}'.format(targetfcname))
 
-    targetfc.analyze()
+    output = targetfc.analyze()
 
     logger.info('enabling archiving (from today forward) on {0}'.format(targetfcname))
 
-    targetfc.enablearchiving()
+    output = targetfc.enablearchiving()
 
     # creating versions like BLDG_DOITT_EDIT probably comes next but that is not
     # part of the import of a single feature class
