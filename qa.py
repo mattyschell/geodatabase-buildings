@@ -106,7 +106,7 @@ if __name__ == '__main__':
         
     timestr = time.strftime("%Y%m%d-%H%M%S")
     targetlog = os.path.join(os.environ['TARGETLOGDIR'] 
-                            ,'qa-{0}.log'.format(timestr))
+                            ,'qa-{0}-{1}.log'.format(ptargetfcname, timestr))
 
     # encoding not available at this python encoding='utf-8'
     logging.basicConfig(filename=targetlog
