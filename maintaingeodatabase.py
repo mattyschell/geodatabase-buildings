@@ -12,15 +12,12 @@ if __name__ == '__main__':
     geodatabase = gdb.Gdb()
 
     timestr = time.strftime("%Y%m%d-%H%M%S")
-    
+
     targetlog = os.path.join(os.environ['TARGETLOGDIR'] 
                             ,'maintaingeodatabase-{0}-{1}.log'.format('SDE'
                                                                      ,timestr))
     logging.basicConfig(filename=targetlog
                        ,level=logging.INFO)
-
-    print('should be logging to {0}'.format(targetlog))
-    logging.info('Logging to {0}'.format(targetlog))
     
     retval = 1
     states_removed = 0
@@ -42,4 +39,3 @@ if __name__ == '__main__':
             retval = 1        
 
     exit(retval)
-

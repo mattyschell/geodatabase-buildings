@@ -13,19 +13,19 @@ set SDEFILE=%BUILDINGSDEFILE%
 %PROPY% %BUILDINGS%maintainversions.py %BUILDINGEDITVERSION% && (
   echo reconciled and posted %BUILDINGEDITVERSION% on %SDEFILE% on %date% at %time% >> sample_maintain.log 
 ) || (
-  %PROPY% %BUILDINGS%notify.py ": Failed version maintenance of %BUILDINGEDITVERSION% on %SDEFILE%" %NOTIFY%
+  %PROPY% %BUILDINGS%notify.py ": Failed version maintenance of %BUILDINGEDITVERSION% on %SDEFILE%" %NOTIFY% && EXIT /B 1
 )  
 set SDEFILE=%ADMINSDEFILE%
 %PROPY% %BUILDINGS%maintaingeodatabase.py %TARGETFC% && (
-    echo performed geodatabase administrator maintainence of %SDEFILE% on %date% at %time% >> sample_maintain.log
+    echo performed geodatabase administrator maintainence of %SDEFILE% on %date% at %time% >> sample_maintain.log 
 ) || (
-    %PROPY% %BUILDINGS%notify.py ": Failed geodatabase administrator maintenance on %SDEFILE%" %NOTIFY%
+    %PROPY% %BUILDINGS%notify.py ": Failed geodatabase administrator maintenance on %SDEFILE%" %NOTIFY% && EXIT /B 1
 ) 
 set SDEFILE=%BUILDINGSDEFILE%
 %PROPY% %BUILDINGS%maintain.py %BUILDINGFC% && (
     echo performed feature class maintenance of %BUILDINGFC% on %SDEFILE% on %date% at %time% >> sample_maintain.log
 ) || (
-    %PROPY% %BUILDINGS%notify.py ": Failed feature class maintenance of %BUILDINGFC% on %SDEFILE%" %NOTIFY%
+    %PROPY% %BUILDINGS%notify.py ": Failed feature class maintenance of %BUILDINGFC% on %SDEFILE%" %NOTIFY% && EXIT /B 1
 ) 
 echo performing %BUILDINGFC% feature class QA on %date% at %time% >> sample_maintain.log
 %PROPY% %BUILDINGS%qa.py %BUILDINGFC% && (

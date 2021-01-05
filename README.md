@@ -40,5 +40,19 @@ or to somewhere cloudy.
 > c:\Progra~1\ArcGIS\Pro\bin\Python\scripts\propy.bat export.py BUILDING 
 ```
 
+# Execute Nightly Maintenance Tasks
+
+1. Reconcile and post BUILDING_DOITT_EDIT version to DEFAULT
+2. Compress and rebuild geodatabase administrator indexes
+3. Rebuild buildings feature class indexes and update database optimizer statistics
+4. Run QA on buildings feature class DEFAULT version
+5. Notify the squad of QA results
+
+Update the environmental variables at the top of this batch file as needed.
+
+```bat
+> sample_maintain.bat 
+```
+
 
 

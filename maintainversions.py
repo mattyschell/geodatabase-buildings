@@ -39,4 +39,3 @@ if __name__ == '__main__':
         logging.error('{0}'.format(recnpostoutput))
 
     exit(retval)
-
