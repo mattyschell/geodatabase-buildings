@@ -9,17 +9,29 @@ set BUILDINGS=C:\matt_projects\geodatabase-buildings\
 set PYTHONPATH=%TOILER%\src\py;%BUILDINGS%
 set PROPY=c:\Progra~1\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe
 set PY27=C:\Python27\ArcGIS10.6\python.exe
-echo deleting target %TARGETFC% on %date% at %time% >> test_import.log
-%PROPY% %BUILDINGS%delete.py %TARGETFC% 
-echo importing %TARGETFC% on %date% at %time% >> test_import.log
-%PROPY% %BUILDINGS%import.py %TARGETFC% %SOURCEFC% %EDITORS% 
-echo creating versioned view %TARGETFC%_EVW on %date% at %time% >> test_import.log
-%PY27% %TOILER%\src\py27\create_versionedviews.py %TARGETFC%
-echo performing QA on %TARGETFC% on %date% at %time% >> test_import.log
-%PROPY% %BUILDINGS%qa.py %TARGETFC% 
-echo notifying us of QA results on %TARGETFC% on %date% at %time% >> test_import.log
+%PROPY% %BUILDINGS%delete.py %TARGETFC% && (
+  echo deleted target %TARGETFC% on %date% at %time% >> %TARGETLOGDIR%import.log
+) || (
+  %PROPY% %BUILDINGS%notify.py ": Failed to delete %TARGETFC% on %SDEFILE%" %NOTIFY% && EXIT /B 1
+)  
+%PROPY% %BUILDINGS%import.py %TARGETFC% %SOURCEFC% %EDITORS% && (
+  echo imported target %TARGETFC% on %date% at %time% >> %TARGETLOGDIR%import.log
+) || (
+  %PROPY% %BUILDINGS%notify.py ": Failed to import %TARGETFC% on %SDEFILE%" %NOTIFY% && EXIT /B 1
+) 
+%PY27% %TOILER%\src\py27\create_versionedviews.py %TARGETFC% && (
+  echo created versioned view %TARGETFC%_EVW on %date% at %time%  >> %TARGETLOGDIR%import.log
+) || (
+  %PROPY% %BUILDINGS%notify.py ": Failed to create versioned views for %TARGETFC% on %SDEFILE%" %NOTIFY% && EXIT /B 1
+) 
+%PROPY% %BUILDINGS%qa.py %TARGETFC% && (
+  echo imported target %TARGETFC% on %date% at %time% >> %TARGETLOGDIR%import.log
+) || (
+  %PROPY% %BUILDINGS%notify.py ": Failed to execute QA on %TARGETFC% on %SDEFILE%" %NOTIFY% && EXIT /B 1
+) 
 %PROPY% %BUILDINGS%notify.py "import and QA of %TARGETFC% on %SDEFILE%" %NOTIFY%
-echo exporting %TARGETFC% to geojson on %date% at %time% >> %TARGETLOGDIR%test_import.log
-%PROPY% %BUILDINGS%export.py %TARGETFC%
-echo notifying us of export results on %date% at %time% >> test_import.log
-%PROPY% %BUILDINGS%notify.py "%TARGETFC% export to geojson backup" %NOTIFY%
+%PROPY% %BUILDINGS%export.py %TARGETFC% (
+  echo exported %TARGETFC% to json on %date% at %time% >> %TARGETLOGDIR%import.log
+) || (
+  %PROPY% %BUILDINGS%notify.py ": Failed to export %TARGETFC% from %SDEFILE%" %NOTIFY% && EXIT /B 1
+) 
