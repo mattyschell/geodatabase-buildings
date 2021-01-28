@@ -54,5 +54,20 @@ Update the environmental variables at the top of this batch file as needed.
 > sample_maintain.bat 
 ```
 
+# SOP Setup
 
+Copy sample batch files out of geodatabase-buildings and into
+geodatabase-scripts.  Then update variables at the top of the batch files
+to match the machine where we are running.
+
+```
+\gis
+   \connections
+   \geodatabase-buildings
+   \geodatabase-scripts
+                       \logs
+                            \import-building.log
+                            \qa-building.log
+   \geodatabase-toiler        
+```
 
