@@ -11,7 +11,7 @@ set PROPY=c:\Progra~1\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe
 echo starting up our work on %BUILDINGFC% %date% at %time% > %TARGETLOGDIR%building_maintain.log
 set SDEFILE=%BUILDINGSDEFILE%
 %PROPY% %BUILDINGS%maintainversions.py %BUILDINGEDITVERSION% && (
-  echo reconciled and posted %BUILDINGEDITVERSION% on %SDEFILE% on %date% at %time% >> %TARGETLOGDIR%building_maintain.log
+  echo reconciled and posted %BUILDINGEDITVERSION% on %SDEFILE% on %date% at %time% > %TARGETLOGDIR%building_maintain.log
 ) || (
   %PROPY% %BUILDINGS%notify.py ": Failed version maintenance of %BUILDINGEDITVERSION% on %SDEFILE%" %NOTIFY% "building_maintain" && EXIT /B 1
 )  
