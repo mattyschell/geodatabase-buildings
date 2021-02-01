@@ -2,6 +2,7 @@ set SDEFILE=T:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
 set TARGETFC=BUILDING_HISTORIC
 set SOURCEFC=C:\matt_projects\database_utils\arcgisconnections\bldg@geocdev.sde\BLDG.BUILDING_HISTORIC
 set EDITORS=MSCHELL
+set VIEWERS=BLDG_READONLY
 set NOTIFY=mschell@doitt.nyc.gov
 set TARGETLOGDIR=C:\Temp\test_import\
 set TOILER=C:\matt_projects\geodatabase-toiler\
@@ -14,10 +15,20 @@ set PY27=C:\Python27\ArcGIS10.6\python.exe
 ) || (
   %PROPY% %BUILDINGS%notify.py ": Failed to delete %TARGETFC% on %SDEFILE%" %NOTIFY% "building_historic_import" && EXIT /B 1
 )  
-%PROPY% %BUILDINGS%import.py %TARGETFC% %SOURCEFC% %EDITORS% && (
+%PROPY% %BUILDINGS%import.py %TARGETFC% %SOURCEFC% && (
   echo imported %TARGETFC% on %date% at %time% >> %TARGETLOGDIR%building_historic_import.log
 ) || (
   %PROPY% %BUILDINGS%notify.py ": Failed to import %TARGETFC% on %SDEFILE%" %NOTIFY% "building_historic_import" && EXIT /B 1
+)  
+%PROPY% %BUILDINGS%grant.py %TARGETFC% %EDITORS% "N" && (
+  echo granted %TARGETFC% edit privileges on %date% at %time% >> %TARGETLOGDIR%building_historic_import.log
+) || (
+  %PROPY% %BUILDINGS%notify.py ": Failed to grant %TARGETFC% edit privileges on %SDEFILE%" %NOTIFY% "building_historic_import" && EXIT /B 1
+)  
+%PROPY% %BUILDINGS%grant.py %TARGETFC% %VIEWERS% "Y" && (
+  echo granted %TARGETFC% viewing privileges on %date% at %time% >> %TARGETLOGDIR%building_historic_import.log
+) || (
+  %PROPY% %BUILDINGS%notify.py ": Failed to grant %TARGETFC% viewing privileges on %SDEFILE%" %NOTIFY% "building_historic_import" && EXIT /B 1
 )  
 %PY27% %TOILER%\src\py27\create_versionedviews.py %TARGETFC% && (
   echo created versioned view for %TARGETFC% on %date% at %time% >> %TARGETLOGDIR%building_historic_import.log

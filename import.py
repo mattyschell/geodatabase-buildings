@@ -26,7 +26,6 @@ if __name__ == "__main__":
 
     targetfcname = sys.argv[1]
     sourcefc     = sys.argv[2]
-    editors      = sys.argv[3]
 
     targetsdeconn = os.environ['SDEFILE']
     targetgdb = gdb.Gdb()
@@ -50,12 +49,6 @@ if __name__ == "__main__":
     # columns should already exist
     logger.info('tracking edits on {0}'.format(targetfcname))
     output = targetfc.trackedits()
-
-    for editor in editors.strip().split(','):
-        
-        logger.info('granting edit privileges on {0} to {1}'.format(targetfcname
-                                                                   ,editor))
-        output = targetfc.grantprivileges(editor)
 
     logger.info('indexing {0} on {1}'.format('BIN'
                                              ,targetfcname))
