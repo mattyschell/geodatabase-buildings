@@ -32,7 +32,7 @@ if __name__ == '__main__':
         logging.info('granting privileges on {0} to {1}'.format(ptargetfcname
                                                               ,grantee))
         
-        if pviewer != 'N':
+        if pviewer != 'Y':
 
             output = targetfc.grantprivileges(grantee)
 
