@@ -31,7 +31,7 @@ BEGIN
          || ' and to_char(bin) not like ''38%'' '
          || ' and to_char(bin) not like ''48%'' '
          || ' and to_char(bin) not like ''58%'' '
-         || ' and to_char(length(bin)) <> 7 '
+         || ' and to_char(length(bin)) = 7 '
          || ')';
 
     EXECUTE IMMEDIATE psql;
