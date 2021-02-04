@@ -27,8 +27,9 @@ def fetchsql(whichsql
 
     elif whichsql == 'shape':
 
-        sql += "sdo_geom.validate_geometry_with_context(a.shape,.0005) <> 'TRUE' "
-
+        sql += "  sdo_geom.validate_geometry_with_context(a.shape,.0005) <> 'TRUE' " \
+            + "or SDO_UTIL.GETNUMELEM(a.shape) > 1 "
+          
     elif whichsql == 'bin':
 
         sql += "  a.bin < 1000000 " \
@@ -38,7 +39,8 @@ def fetchsql(whichsql
             + "or to_char(a.bin) like '38%' " \
             + "or to_char(a.bin) like '48%' " \
             + "or to_char(a.bin) like '58%' " \
-            + "or to_char(length(a.bin)) <> 7 "
+            + "or to_char(length(a.bin)) <> 7 " \
+            + "or a.bin is NULL "
 
     elif whichsql == 'duplicate bin':
 
