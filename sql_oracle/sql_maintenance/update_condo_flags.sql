@@ -1,4 +1,6 @@
 --from user schema create condoflags version
+-- (this was a batch update of bad condo flags, performed prior to 
+--  a full investigation of mappluto_bbl)
 
 begin
     sde.version_util.set_current_version('condoflags');
