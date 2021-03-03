@@ -1,6 +1,6 @@
 set BUILDINGSDEFILE=T:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
 set ADMINSDEFILE=T:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\mschell_private\sde.sde
-set BUILDINGFC=BUILDINGSI
+set BUILDINGFC=BUILDING
 set BUILDINGEDITVERSION=BLDG_DOITT_EDIT
 set NOTIFY=mschell@doitt.nyc.gov
 set TARGETLOGDIR=C:\Temp\logpile\
@@ -11,6 +11,11 @@ set PROPY=c:\Progra~1\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe
 set BATLOG=%TARGETLOGDIR%building_maintain.log
 echo starting up our work on %BUILDINGFC% %date% at %time% > %BATLOG%
 set SDEFILE=%BUILDINGSDEFILE%
+%PROPY% %BUILDINGS%maintaindata.py %BUILDINGFC% %BUILDINGEDITVERSION% && (
+  echo. >> %BATLOG% && echo updated data in %BUILDINGEDITVERSION% on %SDEFILE% on %date% at %time% > %BATLOG%
+) || (
+  %PROPY% %BUILDINGS%notify.py ": Failed to update data in %BUILDINGEDITVERSION% on %SDEFILE%" %NOTIFY% "building_maintain" && EXIT /B 1
+)  
 %PROPY% %BUILDINGS%maintainversions.py %BUILDINGEDITVERSION% && (
   echo. >> %BATLOG% && echo reconciled and posted %BUILDINGEDITVERSION% on %SDEFILE% on %date% at %time% > %BATLOG%
 ) || (

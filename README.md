@@ -53,11 +53,12 @@ or to somewhere cloudy.
 
 ## Execute Nightly Maintenance Tasks
 
-1. Reconcile and post BUILDING_DOITT_EDIT version to DEFAULT
-2. Compress and rebuild geodatabase administrator indexes
-3. Rebuild buildings feature class indexes and update database optimizer statistics
-4. Run QA on buildings feature class DEFAULT version
-5. Notify the squad of QA results
+1. Update any data that editors don't maintain manually
+2. Reconcile and post BUILDING_DOITT_EDIT version to DEFAULT
+3. Compress and rebuild geodatabase administrator indexes
+4. Rebuild buildings feature class indexes and update database optimizer statistics
+5. Run QA on buildings feature class DEFAULT version
+6. Notify the squad of QA results
 
 Update the environmental variables at the top of this batch file as needed.
 

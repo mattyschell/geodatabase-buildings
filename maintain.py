@@ -6,14 +6,13 @@ import time
 import gdb
 import fc
 
-# this here is 4 and 5! 
-# 1 rec and post
-# 2 compress
-# 3 rebuild sde indexes 
-# 4 rebuild feature class indexes 
-# 5 analyze https://pro.arcgis.com/en/pro-app/latest/help/data/geodatabases/manage-oracle/update-statistics.htm
-# (TBD 6 rebuild building_historic)
-# 7 qa 
+# this here is 4! 
+# 1. Update any data that editors don't maintain manually
+# 2. Reconcile and post BUILDING_DOITT_EDIT version to DEFAULT
+# 3. Compress and rebuild geodatabase administrator indexes
+# 4. Rebuild buildings feature class indexes and update database optimizer statistics
+# 5. Run QA on buildings feature class DEFAULT version
+# 6. Notify the squad of QA results
 
 if __name__ == '__main__':
 
