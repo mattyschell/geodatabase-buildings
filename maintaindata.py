@@ -63,6 +63,9 @@ if __name__ == '__main__':
         try:
             sdereturn = cx_sde.execute_immediate(ptargetsdeconn
                                                 ,fetchsql(datasql))
+            logging.info('Successfully executed {0} against {1} on version {2}'.format(datasql
+                                                                                      ,ptargetfcname
+                                                                                      ,ptargetversionname))
         except:
             logging.error('Failed executing : {0} : {1}'.format(datasql
                                                                ,sdereturn)) 

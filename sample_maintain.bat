@@ -12,12 +12,12 @@ set BATLOG=%TARGETLOGDIR%building_maintain.log
 echo starting up our work on %BUILDINGFC% %date% at %time% > %BATLOG%
 set SDEFILE=%BUILDINGSDEFILE%
 %PROPY% %BUILDINGS%maintaindata.py %BUILDINGFC% %BUILDINGEDITVERSION% && (
-  echo. >> %BATLOG% && echo updated data in %BUILDINGEDITVERSION% on %SDEFILE% on %date% at %time% > %BATLOG%
+  echo. >> %BATLOG% && echo updated data in %BUILDINGEDITVERSION% on %SDEFILE% on %date% at %time% >> %BATLOG%
 ) || (
   %PROPY% %BUILDINGS%notify.py ": Failed to update data in %BUILDINGEDITVERSION% on %SDEFILE%" %NOTIFY% "building_maintain" && EXIT /B 1
 )  
 %PROPY% %BUILDINGS%maintainversions.py %BUILDINGEDITVERSION% && (
-  echo. >> %BATLOG% && echo reconciled and posted %BUILDINGEDITVERSION% on %SDEFILE% on %date% at %time% > %BATLOG%
+  echo. >> %BATLOG% && echo reconciled and posted %BUILDINGEDITVERSION% on %SDEFILE% on %date% at %time% >> %BATLOG%
 ) || (
   %PROPY% %BUILDINGS%notify.py ": Failed version maintenance of %BUILDINGEDITVERSION% on %SDEFILE%" %NOTIFY% "building_maintain" && EXIT /B 1
 )  
