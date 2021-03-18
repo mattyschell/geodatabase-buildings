@@ -1,13 +1,18 @@
-set BUILDINGSDEFILE=XX:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
-set ADMINSDEFILE=XX:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\mschell_private\sde.sde
-set BUILDINGFC=BUILDING
-set BUILDINGEDITVERSION=BLDG_DOITT_EDIT
+REM change these next two
+set DBENV=DEV
+set DBNAME=DITGSDV1
+REM unmask the next three
 set NOTIFY=xxxx@yyyy.zzzz.gov
 set NOTIFYFROM=aaaa@bbbb.cccc.gov
 set SMTPFROM=foo.bar
-set TARGETLOGDIR=C:\Temp\logpile\
-set TOILER=C:\matt_projects\geodatabase-toiler\
-set BUILDINGS=C:\matt_projects\geodatabase-buildings\
+REM review the rest but should be good if we set paths consistently
+set BUILDINGSDEFILE=C:\gis\connections\oracle19c\%DBENV%\GIS-%DBNAME%\bldg.sde
+set ADMINSDEFILE=C:\gis\connections\oracle19c\%DBENV%\GIS-%DBNAME%\mschell_private\sde.sde
+set BUILDINGFC=BUILDING
+set BUILDINGEDITVERSION=BLDG_DOITT_EDIT
+set TARGETLOGDIR=C:\gis\geodatabase-scripts\logs\
+set TOILER=C:\gis\geodatabase-toiler\
+set BUILDINGS=C:\gis\geodatabase-buildings\
 set PYTHONPATH=%TOILER%\src\py;%BUILDINGS%
 set PROPY=c:\Progra~1\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe
 set BATLOG=%TARGETLOGDIR%building_maintain.log
