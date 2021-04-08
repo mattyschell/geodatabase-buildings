@@ -22,16 +22,17 @@ Code and helpers for maintaining New York City building footprints in a versione
 ## Import 
 
 ```bat
-> set SDEFILE=T:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
-> set PYTHONPATH=C:\geodatabase-toiler\src\py;C:\geodatabase-buildings
-> c:\Progra~1\ArcGIS\Pro\bin\Python\scripts\propy.bat import.py BUILDING C:\conns\bldg@geocdev.sde\BLDG.BUILDING
+> set SDEFILE=X:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
+> set PYTHONPATH=X:\geodatabase-toiler\src\py;X:\geodatabase-buildings
+> c:\Progra~1\ArcGIS\Pro\bin\Python\scripts\propy.bat import.py BUILDING X:\conns\bldg@geocdev.sde\BLDG.BUILDING
 ```
 
 ## Quality Assurance 
 
 ```bat
-> set SDEFILE=T:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
-> set PYTHONPATH=C:\geodatabase-toiler\src\py;C:\geodatabase-buildings
+> set SDEFILE=X:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
+> set TARGETLOGDIR=X:\gis\geodatabase-scripts\logs\building_maintain
+> set PYTHONPATH=X:\geodatabase-toiler\src\py;X:\geodatabase-buildings
 > c:\Progra~1\ArcGIS\Pro\bin\Python\scripts\propy.bat qa.py BUILDING 
 ```
 
@@ -46,8 +47,8 @@ Consider repeatedly dumping this file to a drive that supports previous versions
 or to somewhere cloudy.
 
 ```bat
-> set SDEFILE=T:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
-> set PYTHONPATH=C:\geodatabase-toiler\src\py;C:\geodatabase-buildings
+> set SDEFILE=X:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
+> set PYTHONPATH=X:\geodatabase-toiler\src\py;X:\geodatabase-buildings
 > c:\Progra~1\ArcGIS\Pro\bin\Python\scripts\propy.bat export.py BUILDING 
 ```
 

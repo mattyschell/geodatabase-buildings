@@ -28,19 +28,19 @@ def fetchsql(whichsql
     elif whichsql == 'shape':
 
         sql += "  sdo_geom.validate_geometry_with_context(a.shape,.0005) <> 'TRUE' " \
-            + "or SDO_UTIL.GETNUMELEM(a.shape) > 1 "
+             + "or SDO_UTIL.GETNUMELEM(a.shape) > 1 "
           
     elif whichsql == 'bin':
 
         sql += "  a.bin < 1000000 " \
-            + "or a.bin >= 6000000 " \
-            + "or to_char(a.bin) like '18%' " \
-            + "or to_char(a.bin) like '28%' " \
-            + "or to_char(a.bin) like '38%' " \
-            + "or to_char(a.bin) like '48%' " \
-            + "or to_char(a.bin) like '58%' " \
-            + "or to_char(length(a.bin)) <> 7 " \
-            + "or a.bin is NULL "
+             + "or a.bin >= 6000000 " \
+             + "or to_char(a.bin) like '18%' " \
+             + "or to_char(a.bin) like '28%' " \
+             + "or to_char(a.bin) like '38%' " \
+             + "or to_char(a.bin) like '48%' " \
+             + "or to_char(a.bin) like '58%' " \
+             + "or to_char(length(a.bin)) <> 7 " \
+             + "or a.bin is NULL "
 
     elif whichsql == 'duplicate bin':
 
@@ -52,14 +52,29 @@ def fetchsql(whichsql
     elif whichsql == 'construction_year':
 
         sql += "    a.construction_year < 1626 " \
-            +  "or a.construction_year > ({0} + 1) ".format(time.strftime("%Y"))
+             +  "or a.construction_year > ({0} + 1) ".format(time.strftime("%Y"))
 
     elif whichsql == 'condo_flags':
 
         sql += "   ( (a.mappluto_bbl <> a.base_bbl) and a.condo_flags = 'N' ) " \
-             + "or ( (a.mappluto_bbl = a.base_bbl)  and a.condo_flags = 'Y' ) "
+            +  "or ( (a.mappluto_bbl = a.base_bbl)  and a.condo_flags = 'Y' ) "
 
-    # print(sql)
+    elif whichsql == 'geometric curves':
+
+        # different
+        sql = "select distinct {0} ".format(synthetickey) \
+            + "from (select a.{0} ".format(synthetickey) \
+            + "     ,decode(mod(rownum, 3), 2, t.column_value, null) etype " \
+            + "     ,decode(mod(rownum, 3), 0, t.column_value, null) interpretation " \
+            + "      from " \
+            + "         {0} a, ".format(versionedview) \
+            + "         TABLE(a.shape.sdo_elem_info) t " \
+            + "     ) " \
+            + "where " \
+            + "   etype in (1005,2005) " \
+            + "or interpretation IN (2,4) "
+
+    #print(sql)
     return sql 
 
 
@@ -82,7 +97,8 @@ def main(targetsdeconn
                 ,'bin'
                 ,'duplicate bin'
                 ,'construction_year'
-                ,'condo_flags']
+                ,'condo_flags'
+                ,'geometric curves']
 
     for checksql in checksqls:
 
