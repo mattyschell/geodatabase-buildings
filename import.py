@@ -43,6 +43,17 @@ if __name__ == "__main__":
     targetfc = fc.Fc(targetgdb
                     ,targetfcname)  
 
+    logger.info('removing any geometric curves from {0}'.format(targetfcname))
+
+    sdereturn = cx_sde.execute_immediate(targetsdeconn,
+                                         fetchsql('compileremovecurves.sql'
+                                                  ,targetgdb.database))
+
+    # editing base table before versioning and indexes, monitor performance
+    sdereturn = cx_sde.execute_immediate(targetsdeconn,
+                                         """begin remove_curves('{0}'); end; """.format(targetfcname))
+
+
     logger.info('versioning {0}'.format(targetfcname))
     targetfc.version()
 
