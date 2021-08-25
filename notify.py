@@ -45,12 +45,13 @@ if __name__ == "__main__":
     content += getlogfile(logdir
                          ,plogtype)   
     
-    msg.set_content(content)
-    
+    msg.set_content(content)    
     msg['From'] = emailfrom
+    # this is headers only 
+    # if a string is passed to sendmail it is treated as a list with one element!
     msg['To'] = pemails
 
-    s = smtplib.SMTP(smtpfrom)
-    s.send_message(msg)
-    s.quit()
+    smtp = smtplib.SMTP(smtpfrom)
+    smtp.sendmail(msg['From'], msg['To'].split(","), msg.as_string())
+    smtp.quit()
 
