@@ -19,7 +19,7 @@ if __name__ == '__main__':
     logging.basicConfig(filename=targetlog
                        ,level=logging.INFO)
     
-    retval = 1
+    retval = 0
     states_removed = 0
  
     try:
@@ -29,7 +29,7 @@ if __name__ == '__main__':
         logging.error('Failed to compress: {0}'.format(geodatabase.sdeconn)) 
         retval = 1
 
-    if states_removed > 0:
+    if retval == 0:
 
         try:
             retval = geodatabase.rebuildindexes()
