@@ -20,7 +20,7 @@ if __name__ == '__main__':
 
     # encoding not available at this python encoding='utf-8'
     logging.basicConfig(filename=targetlog
-                       ,level=logging.DEBUG)
+                       ,level=logging.INFO)
 
     targetgdb = gdb.Gdb()
 
