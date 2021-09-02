@@ -42,8 +42,8 @@ if __name__ == "__main__":
     msg['Subject'] = content
     content += 'at {0} {1}'.format(datetime.datetime.now(), os.linesep)
 
-    content += getlogfile(logdir
-                         ,plogtype)   
+    content += '\n\n' + getlogfile(logdir
+                                  ,plogtype)   
     
     msg.set_content(content)    
     msg['From'] = emailfrom

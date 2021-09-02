@@ -44,10 +44,17 @@ def fetchsql(whichsql
 
     elif whichsql == 'duplicate bin':
 
-        sql += "a.bin in ( " \
-             + "select bin from {0} ".format(versionedview) \
-             + "where bin not in (1000000,2000000,3000000,4000000,5000000)  " \
-             + "group by bin having count(bin) > 1) "
+        # different for performance
+
+        sql = "select a.{0} ".format(synthetickey) \
+            + "from {0} a ".format(versionedview) \
+            + "inner join " \
+            + "   (select bin " \
+            + "    from {0} ".format(versionedview) \
+            + "    group by bin " \
+            + "    having count(*) >= 2) dups " \
+            + "on dups.bin = a.bin " \
+            + "where a.bin not in (1000000,2000000,3000000,4000000,5000000) "
 
     elif whichsql == 'construction_year':
 
