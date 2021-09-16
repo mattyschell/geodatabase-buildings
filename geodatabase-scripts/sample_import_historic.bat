@@ -19,8 +19,9 @@ set PYTHONPATH=%TOILER%\src\py;%BUILDINGS%
 set PROPY=c:\Progra~1\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe
 set PY27=C:\Python27\ArcGIS10.6\python.exe
 set BATLOG=%TARGETLOGDIR%building_historic_import.log
+echo starting building import to target %TARGETFC% on %date% at %time% > %TARGETLOGDIR%building_import.log
 %PROPY% %BUILDINGS%delete.py %TARGETFC% && (
-  echo deleted target %TARGETFC% on %date% at %time% > %BATLOG%
+  echo. deleted target %TARGETFC% on %date% at %time% >> %BATLOG%
 ) || (
   %PROPY% %BUILDINGS%notify.py ": Failed to delete %TARGETFC% on %SDEFILE%" %NOTIFY% "building_historic_import" && EXIT /B 1
 )  
