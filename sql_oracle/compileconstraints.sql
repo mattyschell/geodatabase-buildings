@@ -49,14 +49,4 @@ BEGIN
 
     EXECUTE IMMEDIATE psql;
 
-    -- when mappluto_bbl differs from base_bbl, condo_flag should be Y
-    psql := 'ALTER TABLE ' || addtable || ' '
-         || 'ADD CONSTRAINT ' || addtable || 'CONDO_FLAGS '
-         || 'CHECK '
-         || '(   ( (mappluto_bbl <> base_bbl) and condo_flags = ''Y'' ) '
-         || ' OR ( (mappluto_bbl = base_bbl)  and condo_flags = ''N'' ) '
-         || ')';
-
-    EXECUTE IMMEDIATE psql;
-
 END;
