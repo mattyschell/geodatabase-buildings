@@ -28,14 +28,16 @@ if __name__ == '__main__':
         recnpostoutput = bldg_edit_version.reconcileandpost()
     except:
         logging.error('Failed reconcile and post of: {0}'.format(bldg_edit_version.versionname))        
+        #Failures should bounce out here, unhelpfully when there are conflicts
+        exit(retval)
 
     if 'succeeded' in recnpostoutput.lower():
         logging.info('Successful reconcile and post of {0}'.format(bldg_edit_version.versionname))
         logging.info('{0}'.format(recnpostoutput))
         retval = 0
     else:
-        # not reachable, I think, just in case
-        logging.error('Failed reconcile and post of: {0}'.format(bldg_edit_version.versionname))
-        logging.error('{0}'.format(recnpostoutput))
+        # not reachable, I think, just in case, count on no variables being used
+        logging.error('Failed reconcile and post in an unexpected way')
+
 
     exit(retval)
