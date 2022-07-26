@@ -64,7 +64,9 @@ def fetchsql(whichsql
     elif whichsql == 'condo_flags':
 
         sql += "   ( (a.mappluto_bbl <> a.base_bbl) and a.condo_flags = 'N' ) " \
-            +  "or ( (a.mappluto_bbl = a.base_bbl)  and a.condo_flags = 'Y' ) "
+            +  "or ( (a.mappluto_bbl = a.base_bbl)  and a.condo_flags = 'Y' ) " \
+            +  "or a.mappluto_bbl is null " \
+            +  "or a.condo_flags is null "
 
     elif whichsql == 'geometric curves':
 
