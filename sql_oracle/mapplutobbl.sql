@@ -30,9 +30,20 @@ BEGIN
     -- click save
     commit;
 
+    -- everything not a condo from above
+    -- copy base_bbl to mappluto_bbl
+    psql := 'update '
+         || '   ' || featureclass || '_evw a '
+         || 'set '
+         || '   a.mappluto_bbl  = a.base_bbl '
+         || '  ,a.condo_flags = :p1 '
+         || 'where '
+         || '    a.mappluto_bbl is null ';
+    execute immediate psql using 'N';
+    commit;
+
     -- just in case a flag got flipped somewhere else
-    -- this should be impossible in daily edits due to constraint on A table
-    -- when base_bbl differs from mappluto_bbl, this is a condominium
+    -- force any condo flag Ns to Ys
     psql := 'update '
          || '   ' || featureclass || '_evw a '
          || 'set '
