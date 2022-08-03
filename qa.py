@@ -83,6 +83,21 @@ def fetchsql(whichsql
             + "   etype in (1005,2005) " \
             + "or interpretation IN (2,4) "
 
+    elif whichsql == 'building_layer_extent':
+    
+        # very very different
+        # https://github.com/mattyschell/geodatabase-buildings/issues/24
+        
+        sql = "select a.layer_id from sde.layers a " \
+            + "where " \
+            + "    a.table_name = 'BUILDING' " \
+            + "and a.owner = 'BLDG' " \
+            + "and (round(a.minx) <> 913202 " \
+            + "  or round(a.miny) <> 120960 " \
+            + "  or round(a.maxx) <> 1067367 " \
+            + "  or round(a.maxy) <> 272669 " \
+            + "  ) "
+
     #print(sql)
     return sql 
 
@@ -107,7 +122,8 @@ def main(targetsdeconn
                 ,'duplicate bin'
                 ,'construction_year'
                 ,'condo_flags'
-                ,'geometric curves']
+                ,'geometric curves'
+                ,'building_layer_extent']
 
     for checksql in checksqls:
 
