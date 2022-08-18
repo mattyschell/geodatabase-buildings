@@ -92,10 +92,10 @@ def fetchsql(whichsql
             + "where " \
             + "    a.table_name = 'BUILDING' " \
             + "and a.owner = 'BLDG' " \
-            + "and (round(a.minx) <> 913202 " \
-            + "  or round(a.miny) <> 120960 " \
-            + "  or round(a.maxx) <> 1067367 " \
-            + "  or round(a.maxy) <> 272669 " \
+            + "and (round(a.minx,-3) <> 913000 " \
+            + "  or round(a.miny,-3) <> 121000 " \
+            + "  or round(a.maxx,-3) <> 1067000 " \
+            + "  or round(a.maxy,-3) <> 273000 " \
             + "  ) "
 
     #print(sql)
