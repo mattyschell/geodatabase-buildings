@@ -98,7 +98,16 @@ def fetchsql(whichsql
             + "  or round(a.maxy,-3) <> 273000 " \
             + "  ) "
 
-    #print(sql)
+    elif whichsql == 'duplicate_doitt_id':
+
+        # https://github.com/mattyschell/geodatabase-buildings/issues/27
+
+        sql += "a.{0} in ( ".format(synthetickey) \
+             + "select {0} from {1} ".format(synthetickey,versionedview) \
+             + "group by {0} ".format(synthetickey) \
+             + "having count(*) > 1) "
+
+    print(sql)
     return sql 
 
 
@@ -123,7 +132,8 @@ def main(targetsdeconn
                 ,'construction_year'
                 ,'condo_flags'
                 ,'geometric curves'
-                ,'building_layer_extent']
+                ,'building_layer_extent'
+                ,'duplicate_doitt_id']
 
     for checksql in checksqls:
 
