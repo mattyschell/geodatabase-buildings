@@ -107,7 +107,14 @@ def fetchsql(whichsql
              + "group by {0} ".format(synthetickey) \
              + "having count(*) > 1) "
 
-    print(sql)
+    elif whichsql == 'name':
+
+        # https://github.com/mattyschell/geodatabase-buildings/issues/29
+
+        sql += "    upper(a.name) like '%NULL%' " \
+             +  "or a.name = ' ' "
+
+    # print(sql)
     return sql 
 
 
@@ -133,7 +140,8 @@ def main(targetsdeconn
                 ,'condo_flags'
                 ,'geometric curves'
                 ,'building_layer_extent'
-                ,'duplicate_doitt_id']
+                ,'duplicate_doitt_id'
+                ,'name']
 
     for checksql in checksqls:
 
