@@ -160,3 +160,6 @@ scratch/
 *.shp
 *.shp.xml
 *.shx
+
+#avoid batch file checkins unless forced
+*.bat

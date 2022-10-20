@@ -114,6 +114,10 @@ def fetchsql(whichsql
         sql += "    upper(a.name) like '%NULL%' " \
              +  "or a.name = ' ' "
 
+    elif whichsql == 'bin_mismatch_bbl':
+
+        sql += " substr(to_char(bin),1,1) <> substr(base_bbl,1,1) "
+
     # print(sql)
     return sql 
 
@@ -141,7 +145,8 @@ def main(targetsdeconn
                 ,'geometric curves'
                 ,'building_layer_extent'
                 ,'duplicate_doitt_id'
-                ,'name']
+                ,'name'
+                ,'bin_mismatch_bbl']
 
     for checksql in checksqls:
 
