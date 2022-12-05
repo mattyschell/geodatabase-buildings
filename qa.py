@@ -102,10 +102,9 @@ def fetchsql(whichsql
 
         # https://github.com/mattyschell/geodatabase-buildings/issues/27
 
-        sql += "a.{0} in ( ".format(synthetickey) \
-             + "select {0} from {1} ".format(synthetickey,versionedview) \
+        sql =  "select {0} from {1} ".format(synthetickey,versionedview) \
              + "group by {0} ".format(synthetickey) \
-             + "having count(*) > 1) "
+             + "having count(*) > 1 "
 
     elif whichsql == 'name':
 
