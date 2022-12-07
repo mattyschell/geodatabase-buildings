@@ -34,6 +34,10 @@ if __name__ == "__main__":
     emailfrom       = os.environ['NOTIFYFROM']
     smtpfrom        = os.environ['SMTPFROM']
 
+    print(notification)
+    print(pemails)
+    print(plogtype)
+
     msg = EmailMessage()
 
     # content is like "importing buildings onto xxx.sde"
@@ -47,11 +51,16 @@ if __name__ == "__main__":
     
     msg.set_content(content)    
     msg['From'] = emailfrom
+
     # this is headers only 
     # if a string is passed to sendmail it is treated as a list with one element!
     msg['To'] = pemails
 
     smtp = smtplib.SMTP(smtpfrom)
-    smtp.sendmail(msg['From'], msg['To'].split(","), msg.as_string())
+
+    smtp.sendmail(msg['From']
+                 ,msg['To'].split(",")
+                 ,msg.as_string())
+
     smtp.quit()
 
