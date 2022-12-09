@@ -34,17 +34,14 @@ if __name__ == "__main__":
     emailfrom       = os.environ['NOTIFYFROM']
     smtpfrom        = os.environ['SMTPFROM']
 
-    print(notification)
-    print(pemails)
-    print(plogtype)
-
     msg = EmailMessage()
 
-    # content is like "importing buildings onto xxx.sde"
+    # notification is like "importing buildings onto dev.sde"
 
     content  = 'Completed {0} '.format(notification)
     msg['Subject'] = content
-    content += 'at {0} {1}'.format(datetime.datetime.now(), os.linesep)
+    content += 'at {0} {1}'.format(datetime.datetime.now()
+                                  ,os.linesep)
 
     content += '\n\n' + getlogfile(logdir
                                   ,plogtype)   

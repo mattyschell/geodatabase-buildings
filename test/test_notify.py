@@ -21,11 +21,11 @@ class NotifyTestCase(unittest.TestCase):
         try:
             # refactor cluephone - system call 
             os.system('{0} notify.py {1} {2} {3}'.format(self.propy
-                                                        ,'testing_email_from_' + self.computername   
+                                                        ,'testing-email-from-' + self.computername   
                                                         ,self.notifyto
                                                         ,'test'))
         except:
-            raise
+            raise ValueError('notify.py call failed')
 
         pass
 
