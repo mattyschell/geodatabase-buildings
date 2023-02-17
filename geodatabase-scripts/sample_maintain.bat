@@ -10,6 +10,9 @@ set BUILDINGSDEFILE=C:\gis\connections\oracle19c\%DBENV%\GIS-%DBNAME%\bldg.sde
 set ADMINSDEFILE=C:\gis\connections\oracle19c\%DBENV%\GIS-%DBNAME%\mschell_private\sde.sde
 set BUILDINGFC=BUILDING
 set BUILDINGEDITVERSION=BLDG_DOITT_EDIT
+REM new 1
+set PARENTVERSION=DEFAULT
+REM end new 1
 set TARGETLOGDIR=C:\gis\geodatabase-scripts\logs\
 set TOILER=C:\gis\geodatabase-toiler\
 set BUILDINGS=C:\gis\geodatabase-buildings\
@@ -23,12 +26,28 @@ set SDEFILE=%BUILDINGSDEFILE%
 ) || (
   %PROPY% %BUILDINGS%notify.py ": Failed to update data in %BUILDINGEDITVERSION% on %SDEFILE%" %NOTIFY% "building_maintain" && EXIT /B 1
 )  
+REM NEW 2
+set SDEFILE=%ADMINSDEFILE%
+%PROPY% %BUILDINGS%changeversionaccess.py %PARENTVERSION% unprotect && (
+  echo. >> %BATLOG% && echo unprotected %PARENTVERSION% using %SDEFILE% on %date% at %time% >> %BATLOG%
+) || (
+  %PROPY% %BUILDINGS%notify.py ": Failed to unprotect %PARENTVERSION% using %SDEFILE%" %NOTIFY% "building_maintain" && EXIT /B 1
+)  
+set SDEFILE=%BUILDINGSDEFILE%
+REM end new 2
 %PROPY% %BUILDINGS%maintainversions.py %BUILDINGEDITVERSION% && (
   echo. >> %BATLOG% && echo reconciled and posted %BUILDINGEDITVERSION% on %SDEFILE% on %date% at %time% >> %BATLOG%
 ) || (
   %PROPY% %BUILDINGS%notify.py ": Failed version maintenance of %BUILDINGEDITVERSION% on %SDEFILE%" %NOTIFY% "building_maintain" && EXIT /B 1
 )  
 set SDEFILE=%ADMINSDEFILE%
+REM NEW 3
+%PROPY% %BUILDINGS%changeversionaccess.py %PARENTVERSION% protect && (
+  echo. >> %BATLOG% && echo protected %PARENTVERSION% using %SDEFILE% on %date% at %time% >> %BATLOG%
+) || (
+  %PROPY% %BUILDINGS%notify.py ": Failed to protect %PARENTVERSION% using %SDEFILE%" %NOTIFY% "building_maintain" && EXIT /B 1
+)  
+REM end new 3
 %PROPY% %BUILDINGS%maintaingeodatabase.py %TARGETFC% && (
     echo. >> %BATLOG% && echo performed geodatabase administrator maintainence of %SDEFILE% on %date% at %time% >> %BATLOG%
 ) || (
