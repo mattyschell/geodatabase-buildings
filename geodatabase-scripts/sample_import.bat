@@ -14,7 +14,7 @@ set SDEFILE=%BASEPATH%\connections\oracle19c\%DBENV%\GIS-%DBNAME%\bldg.sde
 REM feel, gather, and realize these. Silencio
 set VIEWERS=BLDG_READONLY
 set TARGETFC=BUILDING
-set TARGETLOGDIR=%BASEPATH%\geodatabase-scripts\logs\building_historic_import\
+set TARGETLOGDIR=%BASEPATH%\geodatabase-scripts\logs\building_import\
 set TOILER=%BASEPATH%\geodatabase-toiler\
 set BUILDINGS=%BASEPATH%\geodatabase-buildings\
 set PYTHONPATH=%TOILER%\src\py;%BUILDINGS%
