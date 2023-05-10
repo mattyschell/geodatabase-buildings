@@ -1,6 +1,10 @@
 # Add Global IDs To Buildings Procedure
 
-### Test plan: Dev
+This documentation describes the testing and implementation plan to resolve [issue 36](https://github.com/mattyschell/geodatabase-buildings/issues/36)
+
+Deploy this repository and geodatabase-toiler (includes addglobalids.py) to the environment and then:
+
+### Test plan
 
 1. Import building and building_historic from a higher environment.
 
@@ -10,7 +14,7 @@
 
 4. Open a map document and use a read only connection to add both layers 
 
-5. Verify that no editing sessions are open to either layer. Stop if this returns anything. We will not distinguish between a user editing and a user reading - any connection to BLDG data other than from BLDG_READONLY is a stop sign. 
+5. Verify that no editing sessions are open to either layer. Stop if this returns anything. We will not distinguish between a user editing and a user reading - any connection to data under the building schema other than from BLDG_READONLY is risky and we will hold. 
 
 ``` sql
 select 
@@ -37,7 +41,7 @@ and
     a.owner <> 'BLDG_READONLY'
 ```
 
-6. Delete the read-only locks. This is bad but it is our best option.  
+6. Delete the read-only table locks. This is bad but it is our best option.  
 
 ```sql
 delete from 
@@ -63,36 +67,36 @@ where
 commit;
 ```
 
-7. ?? Also 7 - Delete the same ids from process_information? Perhaps this prevents errors in end user desktop software. ??
+7. Update and run geodatabase-scripts/sample_addglobalids.bat
 
-8. Update and run geodatabase-scripts/sample_addglobalids.bat
+8. Reconcile and post the step 2 edits
 
-9. Reconcile and post the step 2 edits
+9. Create a new version
 
-10. Create a new version
+10. Add a new building. It should get a new globalid.
 
-11. Add a new building. It should get a new globalid.
+11. "Demolish" a building by copying it to building_historic and deleting it. The record in building_historic should receive a globalid that is different from the source building record.
 
-12. "Demolish" a building by copying it to historic and deleting it. The record in building_historic should receive a globalid that is different from the source building record.
+12. Split a building. One lobe should receive a new globalid.  This should be the same record as the new doitt_id.  
 
-13. Split a building. One lobe should receive a new globalid.  This should be the same record as the new doitt_id.  (Makes you wonder if globalids could meet the original requirements that motivated us to add doitt_ids)
+13. Review the archiving table building_h and the building_evw versioned view. The new globalid column should be populated. 
 
-14. Review the archiving table building_h. The new globalid column should be populated. 
-
-15. Run nightly maintenance script. It should complete as normal without any updates.
+14. Run the nightly maintenance script. It should complete as normal without any updates.
 
 
 #### Staging only
 
-16. Test the import script by importing from staging to development.
+15. Test the import script by importing from staging to development.
 
-17. Test the open data publishing process
+16. Test the open data publishing process. Globalid should appear in the outputs.
 
-18. Test the ArcGIS Online publishing process
+18. Test the ArcGIS Online publishing process.  
 
 
 ### Implementation - Production
 
 1. Notify users.  All users including read only should close out to avoid errors. You'll get things like "application has stopped working" if you have an open connection.
 
-2. Run steps 5 through 8 in the test plan above.
+2. Run steps 5 through 7 from the test plan above.
+
+3. Test steps 9 through 13 in the test plan above.

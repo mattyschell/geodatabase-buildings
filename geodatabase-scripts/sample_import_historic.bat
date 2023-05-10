@@ -46,9 +46,4 @@ echo starting building import to target %TARGETFC% on %date% at %time% > %TARGET
 ) || (
   %PROPY% %BUILDINGS%notify.py ": Failed to create versioned view for %TARGETFC% on %SDEFILE%" %NOTIFY% "building_historic_import" && EXIT /B 1
 ) 
-%PROPY% %BUILDINGS%export.py %TARGETFC% && (
-  echo. >> %BATLOG% && echo exported %TARGETFC% on to json on %date% at %time% >> %BATLOG%
-) || (
-  %PROPY% %BUILDINGS%notify.py ": Failed to export %TARGETFC% to json" %NOTIFY% "building_historic_import" && EXIT /B 1
-)  
 %PROPY% %BUILDINGS%notify.py ": Successfully imported %TARGETFC% to %SDEFILE%" %NOTIFY% "building_historic_import"

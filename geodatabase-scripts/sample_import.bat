@@ -52,8 +52,3 @@ echo starting building import to target %TARGETFC% on %date% at %time% > %TARGET
   %PROPY% %BUILDINGS%notify.py ": Failed to execute QA on %TARGETFC% on %SDEFILE%" %NOTIFY% "building_import" && EXIT /B 1
 ) 
 %PROPY% %BUILDINGS%notify.py "import and QA of %TARGETFC% on %SDEFILE%" %NOTIFY% "qa"
-%PROPY% %BUILDINGS%export.py %TARGETFC% && (
-  echo. >> %BATLOG% && echo exported %TARGETFC% to json on %date% at %time% >> %BATLOG%
-) || (
-  %PROPY% %BUILDINGS%notify.py ": Failed to export %TARGETFC% from %SDEFILE%" %NOTIFY% "building_import" && EXIT /B 1
-) 
