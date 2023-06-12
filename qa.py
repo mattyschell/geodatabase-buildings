@@ -117,6 +117,12 @@ def fetchsql(whichsql
 
         sql += " substr(to_char(bin),1,1) <> substr(base_bbl,1,1) "
 
+    elif whichsql == 'mappluto_bbl':
+
+        # must start with 1-5 then 9 digits to the end of the string
+        sql += """ not regexp_like(mappluto_bbl, '^[1-5][[:digit:]]{9}$')"""
+
+
     # print(sql)
     return sql 
 
@@ -145,7 +151,8 @@ def main(targetsdeconn
                 ,'building_layer_extent'
                 ,'duplicate_doitt_id'
                 ,'name'
-                ,'bin_mismatch_bbl']
+                ,'bin_mismatch_bbl'
+                ,'mappluto_bbl']
 
     for checksql in checksqls:
 
