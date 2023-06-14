@@ -120,7 +120,15 @@ def fetchsql(whichsql
     elif whichsql == 'mappluto_bbl':
 
         # must start with 1-5 then 9 digits to the end of the string
+        # https://github.com/mattyschell/geodatabase-buildings/issues/35
         sql += """ not regexp_like(mappluto_bbl, '^[1-5][[:digit:]]{9}$')"""
+
+    elif whichsql == 'base_bbl': 
+
+        # must start with 1-5 then 9 digits to the end of the string
+        # next need to disallow 75 in the 7th and 8th digit
+        # https://github.com/mattyschell/geodatabase-buildings/issues/13
+        sql += """ not regexp_like(base_bbl, '^[1-5][[:digit:]]{9}$')"""
 
 
     # print(sql)
@@ -152,7 +160,8 @@ def main(targetsdeconn
                 ,'duplicate_doitt_id'
                 ,'name'
                 ,'bin_mismatch_bbl'
-                ,'mappluto_bbl']
+                ,'mappluto_bbl'
+                ,'base_bbl']
 
     for checksql in checksqls:
 
