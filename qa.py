@@ -128,7 +128,8 @@ def fetchsql(whichsql
         # must start with 1-5 then 9 digits to the end of the string
         # next need to disallow 75 in the 7th and 8th digit
         # https://github.com/mattyschell/geodatabase-buildings/issues/13
-        sql += """ not regexp_like(base_bbl, '^[1-5][[:digit:]]{9}$')"""
+        sql += """ not regexp_like(base_bbl, '^[1-5][[:digit:]]{9}$') """ \
+            +  """ or base_bbl is null"""
 
 
     # print(sql)
