@@ -5,7 +5,6 @@ import time
 from datetime import datetime
 
 import gdb
-import fc
 import cx_sde
 
 synthetickey = 'doitt_id'
@@ -131,18 +130,13 @@ def fetchsql(whichsql
         sql += """ not regexp_like(base_bbl, '^[1-5][[:digit:]]{9}$') """ \
             +  """ or base_bbl is null"""
 
-
     # print(sql)
     return sql 
 
 
-def main(targetsdeconn
-        ,targetfcname):
-
-    targetgdb = gdb.Gdb()
-
-    targetfc = fc.Fc(targetgdb
-                    ,targetfcname)  
+def main(targetgdb
+        ,targetfcname
+        ,sqlsoverride):
 
     qareport = os.linesep
 
@@ -163,14 +157,15 @@ def main(targetsdeconn
                 ,'bin_mismatch_bbl'
                 ,'mappluto_bbl'
                 ,'base_bbl']
+    
+    if set(sqlsoverride).issubset(set(checksqls)):
+        checksqls = sqlsoverride
 
     for checksql in checksqls:
 
         invalidids = cx_sde.selectacolumn(targetgdb.sdeconn
                                          ,fetchsql(checksql
                                                   ,targetfcname))
-
-        # print('kount of invalid ' + checksql + ' is ' + str(len(invalidids)))
 
         if len(invalidids) > 0:
 
@@ -183,8 +178,16 @@ def main(targetsdeconn
 
 if __name__ == '__main__':
 
-    ptargetsdeconn = os.environ['SDEFILE']
     ptargetfcname  = sys.argv[1]
+
+    if len(sys.argv) == 2:
+        psqlsoverride = 'no'
+    else:
+        # optionally pass in a subset of the checksqls above
+        # use this for building_historic where we enforce few checks
+        psqlsoverride = sys.argv[2].split(',')
+
+    ptargetgdb     = gdb.Gdb()
         
     timestr = time.strftime("%Y%m%d-%H%M%S")
     targetlog = os.path.join(os.environ['TARGETLOGDIR'] 
@@ -194,13 +197,14 @@ if __name__ == '__main__':
     logging.basicConfig(filename=targetlog
                        ,level=logging.DEBUG)
 
-    retqareport = main(ptargetsdeconn
-                      ,ptargetfcname)
+    retqareport = main(ptargetgdb
+                      ,ptargetfcname
+                      ,psqlsoverride)
 
     if len(retqareport) > 4:
 
         # 4 allows for a pair of sloppy CRLFs
+        #QA does not notify. It QAs and writes the results
         logging.error(retqareport)
 
-
-    #QA does not email. It QAs
+    
