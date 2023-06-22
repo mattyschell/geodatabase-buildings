@@ -30,6 +30,14 @@ if __name__ == "__main__":
     notification    = sys.argv[1]
     pemails         = sys.argv[2]
     plogtype        = sys.argv[3] # ex 'qa' 'export' '*' (latest)
+    
+    if len(sys.argv) == 4:
+        pchecklogfor = 'nothing'
+    else:
+        # pass in ERROR for example
+        # to only notify if ERROR appears in the log
+        pchecklogfor = sys.argv[4]
+
     logdir          = os.environ['TARGETLOGDIR']
     emailfrom       = os.environ['NOTIFYFROM']
     smtpfrom        = os.environ['SMTPFROM']
@@ -53,11 +61,13 @@ if __name__ == "__main__":
     # if a string is passed to sendmail it is treated as a list with one element!
     msg['To'] = pemails
 
-    smtp = smtplib.SMTP(smtpfrom)
+    if  (pchecklogfor != 'nothing' and pchecklogfor in content) \
+    or   pchecklogfor == 'nothing':
+        
+        smtp = smtplib.SMTP(smtpfrom)
 
-    smtp.sendmail(msg['From']
-                 ,msg['To'].split(",")
-                 ,msg.as_string())
+        smtp.sendmail(msg['From']
+                     ,msg['To'].split(",")
+                     ,msg.as_string())
 
-    smtp.quit()
-
+        smtp.quit()
