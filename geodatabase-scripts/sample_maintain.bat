@@ -9,6 +9,7 @@ REM review the rest but should be good if we set paths consistently
 set BUILDINGSDEFILE=C:\gis\connections\oracle19c\%DBENV%\GIS-%DBNAME%\bldg.sde
 set ADMINSDEFILE=C:\gis\connections\oracle19c\%DBENV%\GIS-%DBNAME%\mschell_private\sde.sde
 set BUILDINGFC=BUILDING
+set BUILDINGHISTORICFC=BUILDING_HISTORIC
 set BUILDINGEDITVERSION=BLDG_DOITT_EDIT
 REM new 1
 set PARENTVERSION=DEFAULT
@@ -60,11 +61,14 @@ set SDEFILE=%BUILDINGSDEFILE%
     %PROPY% %BUILDINGS%notify.py ": Failed feature class maintenance of %BUILDINGFC% on %SDEFILE%" %NOTIFY% "building_maintain" && EXIT /B 1
 ) 
 echo. >> %BATLOG% && echo performing %BUILDINGFC% feature class QA on %date% at %time% >> %BATLOG%
+%PROPY% %BUILDINGS%qa.py %BUILDINGHISTORICFC% "shape" && (
+    %PROPY% %BUILDINGS%notify.py ": QA of %BUILDINGHISTORICFC% on %SDEFILE%" %NOTIFY% "qa" "ERROR"
+) || (
+    %PROPY% %BUILDINGS%notify.py ": Failed QA of %BUILDINGHISTORICFC% on %SDEFILE%" %NOTIFY% "qa"
+) 
 %PROPY% %BUILDINGS%qa.py %BUILDINGFC% && (
     %PROPY% %BUILDINGS%notify.py ": Successfully completed maintenance and QA of %BUILDINGFC% on %SDEFILE%" %NOTIFY% "qa"
 ) || (
     %PROPY% %BUILDINGS%notify.py ": Failed QA of %BUILDINGFC% on %SDEFILE%" %NOTIFY% "qa"
 ) 
 echo. >> %BATLOG% && echo completed notifying the squad of %BUILDINGFC% QA results on %date% at %time% >> %BATLOG%
-
-
