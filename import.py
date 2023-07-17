@@ -22,10 +22,17 @@ def fetchsql(whichsql
     return sql 
 
 
+
 if __name__ == "__main__":
 
     targetfcname = sys.argv[1]
     sourcefc     = sys.argv[2]
+
+    if sourcefc.lower().endswith('historic'):
+        targetfctype = 'historic'
+    else:
+        targetfctype = 'building'
+
 
     targetsdeconn = os.environ['SDEFILE']
     targetgdb = gdb.Gdb()
@@ -65,35 +72,53 @@ if __name__ == "__main__":
                                              ,targetfcname))
     output = targetfc.index('BIN')
 
+    # generic helper index for performance
     logger.info('indexing {0} on {1}'.format('BASE_BBL'
-                                             ,targetfcname))
-    
+                                             ,targetfcname))    
     output = targetfc.index('BASE_BBL')
 
     # reminder: "unique indexes cant be specified for multiversioned tables"
     logger.info('indexing {0} on {1}'.format('DOITT_ID'
-                                             ,targetfcname))
+                                                ,targetfcname))
     output = targetfc.index('DOITT_ID')
 
-    logger.info('adding doitt_id trigger to {0}'.format(targetfcname))
+    if targetfctype != 'historic':
 
-    sdereturn = cx_sde.execute_immediate(targetsdeconn,
-                                         fetchsql('compiletriggers.sql'
-                                                  ,targetgdb.database))
+        # only add trigger to main building feature class
+        logger.info('adding doitt_id trigger to {0}'.format(targetfcname))
 
-    # todo: get oracle syntax outta here.  Requires pushing table name to SQL 
-    sdereturn = cx_sde.execute_immediate(targetsdeconn,
-                                         """begin ADD_BUILDING_TRIGGER('{0}'); end; """.format(targetfcname))
+        sdereturn = cx_sde.execute_immediate(targetsdeconn,
+                                             fetchsql('compiletriggers.sql'
+                                                     ,targetgdb.database))
 
-    logger.info('adding constraints to Add table of {0}'.format(targetfcname))
+        # todo: get oracle syntax outta here.  Requires pushing table name to SQL 
+        sdereturn = cx_sde.execute_immediate(targetsdeconn,
+                                             """begin ADD_BUILDING_TRIGGER('{0}'); end; """.format(targetfcname))
 
-    sdereturn = cx_sde.execute_immediate(targetsdeconn,
-                                         fetchsql('compileconstraints.sql'
-                                                  ,targetgdb.database))
+        # different constraints than historic
+        logger.info('adding constraints to Add table of {0}'.format(targetfcname))
 
-    # todo: get oracle syntax outta here. Requires pushing table name to SQL
-    sdereturn = cx_sde.execute_immediate(targetsdeconn,
-                                         """begin ADD_BUILDING_CONSTR('{0}'); end; """.format(targetfcname))
+        sdereturn = cx_sde.execute_immediate(targetsdeconn,
+                                             fetchsql('compileconstraints.sql'
+                                                      ,targetgdb.database))
+
+        # todo: get oracle syntax outta here. Requires pushing table name to SQL
+        sdereturn = cx_sde.execute_immediate(targetsdeconn,
+                                            """begin ADD_BUILDING_CONSTR('{0}'); end; """.format(targetfcname))
+
+    elif targetfctype == 'historic':
+
+        # different constraints for historic
+        logger.info('adding constraints to Add table of {0}'.format(targetfcname))
+
+        sdereturn = cx_sde.execute_immediate(targetsdeconn,
+                                             fetchsql('historic-compileconstraints.sql'
+                                                      ,targetgdb.database))
+
+        # todo: get oracle syntax outta here. Requires pushing table name to SQL
+        sdereturn = cx_sde.execute_immediate(targetsdeconn,
+                                            """begin ADD_H_BUILDING_CONSTR('{0}'); end; """.format(targetfcname))
+
 
     logger.info('updating statistics on {0}'.format(targetfcname))
 
