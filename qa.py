@@ -87,7 +87,11 @@ def fetchsql(whichsql
         # very very different
         # https://github.com/mattyschell/geodatabase-buildings/issues/24
         
-        sql = "select a.layer_id from sde.layers a " \
+        sql = "select case " \
+            + "    when a.layer_id > 0 " \
+            + "    then 'layer extent in the geodatabase (not a specific doitt_id)'" \
+            + "end  " \
+            + "from sde.layers a " \
             + "where " \
             + "    a.table_name = 'BUILDING' " \
             + "and a.owner = 'BLDG' " \
@@ -133,7 +137,7 @@ def fetchsql(whichsql
     # print(sql)
     return sql 
 
-
+             
 def main(targetgdb
         ,targetfcname
         ,sqlsoverride):
@@ -151,12 +155,12 @@ def main(targetgdb
                 ,'construction_year'
                 ,'condo_flags'
                 ,'geometric curves'
-                ,'building_layer_extent'
                 ,'duplicate_doitt_id'
                 ,'name'
                 ,'bin_mismatch_bbl'
                 ,'mappluto_bbl'
-                ,'base_bbl']
+                ,'base_bbl'
+                ,'building_layer_extent']
     
     if set(sqlsoverride).issubset(set(checksqls)):
         checksqls = sqlsoverride
@@ -171,7 +175,7 @@ def main(targetgdb
 
             qareport = qareport + os.linesep \
                     + 'invalid {0} for {1}(s): {2}'.format(checksql, synthetickey, os.linesep) \
-                    + os.linesep.join(map(str, (invalidids)))  
+                    + os.linesep.join(f'     {invalidid}' for invalidid in invalidids)  
             
     return qareport
 
