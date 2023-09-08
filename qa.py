@@ -8,6 +8,7 @@ import gdb
 import cx_sde
 
 synthetickey = 'doitt_id'
+col2         = 'last_edited_user'
 
 def fetchsql(whichsql
             ,fcname):
@@ -16,7 +17,8 @@ def fetchsql(whichsql
 
     versionedview = fcname + '_evw'
     
-    sql = "select a.{0} ".format(synthetickey) \
+    sql = "select " \
+        + "a.{0} || ' (' || a.{1} || ')' ".format(synthetickey, col2) \
         + "from {0} a ".format(versionedview) \
         + "where " \
 
@@ -45,7 +47,8 @@ def fetchsql(whichsql
 
         # different for performance
 
-        sql = "select a.{0} ".format(synthetickey) \
+        sql = "select " \
+            + "a.{0} || ' (' || a.{1} || ')' ".format(synthetickey, col2) \
             + "from {0} a ".format(versionedview) \
             + "inner join " \
             + "   (select bin " \
@@ -134,7 +137,7 @@ def fetchsql(whichsql
         sql += """ not regexp_like(base_bbl, '^[1-5][[:digit:]]{9}$') """ \
             +  """ or base_bbl is null"""
 
-    # print(sql)
+    #print(sql)
     return sql 
 
              
@@ -176,7 +179,8 @@ def main(targetgdb
             qareport = qareport + os.linesep \
                     + 'invalid {0} for {1}(s): {2}'.format(checksql, synthetickey, os.linesep) \
                     + os.linesep.join(f'     {invalidid}' for invalidid in invalidids)  
-            
+    
+    #print(qareport)     
     return qareport
 
 
