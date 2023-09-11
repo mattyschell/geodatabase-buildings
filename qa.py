@@ -7,18 +7,17 @@ from datetime import datetime
 import gdb
 import cx_sde
 
-synthetickey = 'doitt_id'
-col2         = 'last_edited_user'
 
 def fetchsql(whichsql
             ,fcname):
-
-    # different patterns in this fetchsql.  cluephone ringaling
+    
+    synthetickey = 'doitt_id'
+    flagged4     = 'last_edited_user'
 
     versionedview = fcname + '_evw'
     
     sql = "select " \
-        + "a.{0} || ' (' || a.{1} || ')' ".format(synthetickey, col2) \
+        + "a.{0} || ' (' || a.{1} || ')' ".format(synthetickey, flagged4) \
         + "from {0} a ".format(versionedview) \
         + "where " \
 
@@ -45,10 +44,12 @@ def fetchsql(whichsql
 
     elif whichsql == 'duplicate bin':
 
-        # different for performance
+        # different for performance and reporting
 
         sql = "select " \
-            + "a.{0} || ' (' || a.{1} || ')' ".format(synthetickey, col2) \
+            + "'DOITT_ID ' || a.{0} || ' | ".format(synthetickey) \
+            + " BIN ' || a.bin || ' | " \
+            + " (' || a.{0} || ')' ".format(flagged4) \
             + "from {0} a ".format(versionedview) \
             + "inner join " \
             + "   (select bin " \
@@ -145,6 +146,7 @@ def main(targetgdb
         ,targetfcname
         ,sqlsoverride):
 
+    synthetickey = 'doitt_id'
     qareport = os.linesep
 
     # new QA check to add?
