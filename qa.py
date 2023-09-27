@@ -137,6 +137,13 @@ def fetchsql(whichsql
         # https://github.com/mattyschell/geodatabase-buildings/issues/13
         sql += """ not regexp_like(base_bbl, '^[1-5][[:digit:]]{9}$') """ \
             +  """ or base_bbl is null"""
+        
+    elif whichsql == 'feature_code': 
+
+        #https://github.com/mattyschell/geodatabase-buildings/issues/34
+        sql += " a.feature_code = 0 " \
+             + " or a.feature_code is null "
+
 
     #print(sql)
     return sql 
@@ -165,7 +172,8 @@ def main(targetgdb
                 ,'bin_mismatch_bbl'
                 ,'mappluto_bbl'
                 ,'base_bbl'
-                ,'building_layer_extent']
+                ,'building_layer_extent'
+                ,'feature_code']
     
     if set(sqlsoverride).issubset(set(checksqls)):
         checksqls = sqlsoverride
