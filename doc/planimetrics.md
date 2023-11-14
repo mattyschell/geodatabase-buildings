@@ -17,7 +17,7 @@ See the buildings portion of the 2022 capture rules snipped out here
 
 Work in progress procedure we will use for the 2022 planimetrics delivered in the fall of 2023.
 
-1. Create the table with useful columns.  ESRI gets too clever if  allowed to do this and adds constraints that it then violates on its own import conversion.
+1. Create the table with useful columns.  ESRI gets too clever if allowed to do this and adds constraints that it then violates on its own import conversion.
 
    ```sql
    create table bldg.planimetrics_2022 
@@ -41,6 +41,51 @@ Work in progress procedure we will use for the 2022 planimetrics delivered in th
 3. Load bldg.planimetrics_2022 from the delivered file geodatabase, mapping columns.  Expect this to take 10-20 minutes.
  
 4. Get crescent fresh.  
+
+    Sanitize 
+
+    ```sql
+    select 
+    'converting ' ||  to_char(count(*)) || ' doitt_ids from 0 to null '
+    from 
+        bldg.planimetrics_2022  
+    where 
+        doitt_id = 0 
+    union all
+    select 
+        'converting ' ||  to_char(count(*)) || ' bins from 0 to null '
+    from 
+        bldg.planimetrics_2022  
+    where 
+        bin = 0 
+    union all
+    select 
+        'converting ' ||  to_char(count(*)) || ' bbls from a blank space to null '
+    from 
+        bldg.planimetrics_2022  
+    where 
+        bbl = ' ';
+    update
+        bldg.planimetrics_2022  
+    set 
+        doitt_id = NULL
+    where 
+        doitt_id = 0;    
+    update
+        bldg.planimetrics_2022  
+    set 
+        bin = NULL
+    where bin = 0;     
+    update
+        bldg.planimetrics_2022  
+    set 
+        bbl = NULL
+    where 
+        bbl = ' ';
+    commit;
+    ```
+
+    Finalize data definition.    
 
     ```sql
     call gis_utils.add_spatial_index('PLANIMETRICS_2022','SHAPE',2263,.0005);
