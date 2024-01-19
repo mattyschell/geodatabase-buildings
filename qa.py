@@ -64,13 +64,6 @@ def fetchsql(whichsql
         sql += "    a.construction_year < 1626 " \
              +  "or a.construction_year > ({0} + 1) ".format(time.strftime("%Y"))
 
-    elif whichsql == 'condo_flags':
-
-        sql += "   ( (a.mappluto_bbl <> a.base_bbl) and a.condo_flags = 'N' ) " \
-            +  "or ( (a.mappluto_bbl = a.base_bbl)  and a.condo_flags = 'Y' ) " \
-            +  "or a.mappluto_bbl is null " \
-            +  "or a.condo_flags is null "
-
     elif whichsql == 'geometric curves':
 
         # different
@@ -165,7 +158,6 @@ def main(targetgdb
                 ,'bin'
                 ,'duplicate bin'
                 ,'construction_year'
-                ,'condo_flags'
                 ,'geometric curves'
                 ,'duplicate_doitt_id'
                 ,'name'
