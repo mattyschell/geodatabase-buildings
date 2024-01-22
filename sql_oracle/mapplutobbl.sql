@@ -11,9 +11,9 @@ BEGIN
     psql := 'update '
          || '    ' || featureclass || '_evw a '
          || 'set '
-         || '    (a.mappluto_bbl, a.condo_flags) = '
+         || '    a.mappluto_bbl = '
          || '        (select '
-         || '            b.condo_billing_bbl, :p1 '
+         || '            b.condo_billing_bbl '
          || '         from '
          || '            ' || condotable || ' b '
          || '         where '
@@ -26,7 +26,7 @@ BEGIN
          || '     where '
          || '         a.base_bbl = c.condo_base_bbl '
          || '     and a.mappluto_bbl <> c.condo_billing_bbl)';
-    execute immediate psql using 'Y';
+    execute immediate psql;
     -- click save
     commit;
 
@@ -36,35 +36,9 @@ BEGIN
          || '   ' || featureclass || '_evw a '
          || 'set '
          || '   a.mappluto_bbl  = a.base_bbl '
-         || '  ,a.condo_flags = :p1 '
          || 'where '
          || '    a.mappluto_bbl is null ';
-    execute immediate psql using 'N';
-    commit;
-
-    -- just in case a flag got flipped somewhere else
-    -- force any condo flag Ns to Ys
-    psql := 'update '
-         || '   ' || featureclass || '_evw a '
-         || 'set '
-         || '   a.condo_flags = :p1 '
-         || 'where '
-         || '    a.base_bbl <> a.mappluto_bbl '
-         || 'and '
-         || '    condo_flags <> :p2 ';
-    execute immediate psql using 'Y', 'Y';
-    commit;
-    
-    -- when base_bbl and mappluto_bbl are the same, this is not a condominium
-    psql := 'update '
-         || '   ' || featureclass || '_evw a '
-         || 'set '
-         || '    a.condo_flags = :p1 '
-         || 'where '
-         || '    a.base_bbl = a.mappluto_bbl '
-         || 'and '
-         || '    a.condo_flags = :p2 ';
-    execute immediate psql using 'N', 'Y';
+    execute immediate psql;
     commit;
 
     -- stop editing
