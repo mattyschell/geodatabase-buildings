@@ -117,12 +117,6 @@ def fetchsql(whichsql
 
         sql += " substr(to_char(bin),1,1) <> substr(base_bbl,1,1) "
 
-    elif whichsql == 'mappluto_bbl':
-
-        # must start with 1-5 then 9 digits to the end of the string
-        # https://github.com/mattyschell/geodatabase-buildings/issues/35
-        sql += """ not regexp_like(mappluto_bbl, '^[1-5][[:digit:]]{9}$')"""
-
     elif whichsql == 'base_bbl': 
 
         # must start with 1-5 then 9 digits to the end of the string
@@ -130,6 +124,21 @@ def fetchsql(whichsql
         # https://github.com/mattyschell/geodatabase-buildings/issues/13
         sql += """ not regexp_like(base_bbl, '^[1-5][[:digit:]]{9}$') """ \
             +  """ or base_bbl is null"""
+
+    elif whichsql == 'mappluto_bbl':
+
+        # if mappluto_bbl differs from base_bbl then
+        #    mappluto designates a "condo bbl" 
+        #    condo bbls are 10 digits with 75 in places 7 and 8
+        # when mappluto_bbls are not condo bbls
+        #      then mappluto_bbl should be the usual boro followed by 9 digits
+        # all mappluto_bbls should be in the same boro as the base_bbl
+        sql += """ (base_bbl <> mappluto_bbl """ \
+            +  """  and not regexp_like(mappluto_bbl, '^[1-5]\d{5}75\d{2}$') """ \
+            +  """  ) """ \
+            + """ or not """ \
+            + """    regexp_like(mappluto_bbl, '^[1-5][[:digit:]]{9}$') """ \
+            + """ or substr(to_char(bin),1,1) <> substr(mappluto_bbl,1,1) """
         
     elif whichsql == 'feature_code': 
 
@@ -162,8 +171,8 @@ def main(targetgdb
                 ,'duplicate_doitt_id'
                 ,'name'
                 ,'bin_mismatch_bbl'
-                ,'mappluto_bbl'
                 ,'base_bbl'
+                ,'mappluto_bbl'
                 ,'building_layer_extent'
                 ,'feature_code']
     
