@@ -36,9 +36,9 @@ Work in progress procedure we will use for the 2022 planimetrics delivered in th
     );
     ```
 
-2. Register bldg.planimetrics_2022 with the geodatabase
+2. Register bldg.planimetrics_2022 with the geodatabase. Use 32 bit ArcCatalog classic if the latest version of Pro (3.2 now) throws errors.
 
-3. Load bldg.planimetrics_2022 from the delivered file geodatabase, mapping columns.  Expect this to take 10-20 minutes.
+3. Load bldg.planimetrics_2022 from the delivered file geodatabase, mapping columns.  Expect this to take 20-30 minutes.
  
 4. Get crescent fresh.  
 
@@ -212,28 +212,40 @@ Work in progress procedure we will use for the 2022 planimetrics delivered in th
 
     Because of the timing of the planimetrics delivery most "new" buildings are actually old and we have probably added them. Resource permitting, begin with the features that are most likely to be useful.
 
-    This example takes all planimetrics "New" buildings under construction that have no spatial relationship with existing buildings.  The example uses the bldg.building base table.  In real usage either fully compress the buildings delta tables or (more likely) load and index default buildings as a separate table.
+    This example takes all planimetrics "New" buildings under construction that have no spatial relationship with existing buildings.  See [issue 46](https://github.com/mattyschell/geodatabase-buildings/issues/46) for discussion and images.
 
-    See [issue 46](https://github.com/mattyschell/geodatabase-buildings/issues/46) for discussion and images.
+    Execute against a freshly imported buildings feature class base table in a non-prod environment. Then export the selected planimetrics buildings (~120) to production. Don't make it too clever.  Running in two steps seems to be the best way to guarantee the domain index gets used.
 
     ```sql
+    -- get all new buildings that do touch an existing building
+    create table 
+        touchsome 
+    as
+    select /*+ ORDERED */
+        a.objectid
+    from 
+        bldg.building b
+    ,bldg.planimetrics_2022 a 
+    where
+        SDO_RELATE(a.shape, b.shape, 'mask=ANYINTERACT') = 'TRUE'
+    and a.feature_code = 5100
+    and a.status = 'New';
+    -- new buildings not in the list above are good candidates
+    create table 
+        newplanimetricsbldgs 
+    as
     select 
-        aa.objectid 
+        aa.*
     from 
         bldg.planimetrics_2022 aa
     where 
         aa.feature_code = 5100
     and aa.status = 'New'
     and aa.objectid not in 
-        (select /*+ ORDERED */
-            a.objectid
+        (select 
+            objectid 
         from 
-            bldg.building b
-           ,bldg.planimetrics_2022 a 
-        where
-            SDO_RELATE(a.shape, b.shape, 'mask=ANYINTERACT') = 'TRUE'
-        and a.feature_code = 5100
-        and a.status = 'New');
+            touchsome);
     ```
 
     
