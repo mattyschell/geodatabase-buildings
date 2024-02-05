@@ -225,7 +225,7 @@ Work in progress procedure we will use for the 2022 planimetrics delivered in th
         a.objectid
     from 
         bldg.building b
-    ,bldg.planimetrics_2022 a 
+       ,bldg.planimetrics_2022 a 
     where
         SDO_RELATE(a.shape, b.shape, 'mask=ANYINTERACT') = 'TRUE'
     and a.feature_code = 5100
@@ -247,6 +247,34 @@ Work in progress procedure we will use for the 2022 planimetrics delivered in th
         from 
             touchsome);
     ```
+
+10. Probably demolished buildings
+
+    Any building that existed at the time of planimerics capture that was not retured to us in the delivery was likely demolished prior to 2022.  Subtract any footprints we have moved to building_historic.
+
+    ```sql
+    select 
+        doitt_id 
+    from 
+        bldg.building
+    where 
+        doitt_id < (select max(doitt_id) 
+                    from bldg.planimetrics_2022)
+    minus
+    select 
+        doitt_id 
+    from 
+        bldg.planimetrics_2022
+    where 
+        doitt_id is not null
+    minus 
+    select 
+        doitt_id 
+    from 
+        bldg.building_historic
+    where 
+        doitt_id is not null  
+    ``` 
 
     
 
