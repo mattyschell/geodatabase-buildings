@@ -256,7 +256,7 @@ Work in progress procedure we will use for the 2022 planimetrics delivered in th
     select 
         doitt_id 
     from 
-        bldg.building
+        bldg.building_evw
     where 
         doitt_id < (select max(doitt_id) 
                     from bldg.planimetrics_2022)
@@ -271,7 +271,7 @@ Work in progress procedure we will use for the 2022 planimetrics delivered in th
     select 
         doitt_id 
     from 
-        bldg.building_historic
+        bldg.building_historic_evw
     where 
         doitt_id is not null  
     ``` 
