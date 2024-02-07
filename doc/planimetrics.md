@@ -252,14 +252,21 @@ Work in progress procedure we will use for the 2022 planimetrics delivered in th
 
     Any building that existed at the time of planimerics capture that was not retured to us in the delivery was likely demolished prior to 2022.  Subtract any footprints we have moved to building_historic.
 
+    Remove from the  list  
+
+    * any buildings edited after we started using 2022 imagery
+    * garages
+
     ```sql
     select 
-        doitt_id 
+        doitt_id
     from 
         bldg.building_evw
     where 
         doitt_id < (select max(doitt_id) 
                     from bldg.planimetrics_2022)
+    and last_edited_date < to_date('01-SEP-2022', 'DD-MON-YYYY')
+    and feature_code <> 5110
     minus
     select 
         doitt_id 
