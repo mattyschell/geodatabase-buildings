@@ -31,6 +31,11 @@ echo starting building import to target %TARGETFC% on %date% at %time% > %TARGET
 ) || (
   %PROPY% %BUILDINGS%notify.py ": Failed to import %TARGETFC% on %SDEFILE%" %NOTIFY% "building_import" && EXIT /B 1
 ) 
+%PY27% %TOILER%\src\py27\enable_archiving.py %TARGETFC% && (
+  echo. >> %BATLOG% && echo enabled archiving on %TARGETFC% on %date% at %time%  >> %BATLOG%
+) || (
+  %PROPY% %BUILDINGS%notify.py ": Failed to enable archiving for %TARGETFC% on %SDEFILE%" %NOTIFY% "building_import" && EXIT /B 1
+) 
 %PROPY% %BUILDINGS%grant.py %TARGETFC% %EDITORS% "N" && (
   echo. >> %BATLOG% && echo granted %TARGETFC% edit privileges on %date% at %time% >> %BATLOG%
 ) || (

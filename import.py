@@ -124,9 +124,7 @@ if __name__ == "__main__":
 
     output = targetfc.analyze()
 
-    logger.info('enabling archiving (from today forward) on {0}'.format(targetfcname))
-
-    output = targetfc.enablearchiving()
+    # enable archiving should be restored here
 
     # creating versions like BLDG_DOITT_EDIT probably comes next but that is not
     # part of the import of a single feature class
