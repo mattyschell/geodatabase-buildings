@@ -1,28 +1,25 @@
-REM change these 
-set DBENV=DEV
-set DBNAME=XXXXXXXX
-set BASEPATH=X:\XXX
-set SOURCEFC=%BASEPATH%\connections\oracle19c\XXX\GIS-XXXXXXXX\bldg.sde\BLDG.BUILDING
-set EDITORS=XXXXXX,XXXXXX
-REM unmask these
-set NOTIFY=XXXXXX@XXX.nyc.gov
-set NOTIFYFROM=XXXXXX@XXX.nyc.gov
-set SMTPFROM=XXXXXXXXX.XXXXXX
-REM review these
-set PY27=C:\Python27\ArcGIS10.7\python.exe
-set SDEFILE=%BASEPATH%\connections\oracle19c\%DBENV%\GIS-%DBNAME%\bldg.sde
-REM feel, gather, and realize these. Silencio
-set VIEWERS=BLDG_READONLY
+set DBENV=xxx
+set DBNAME=xxxxxx
+set BASEPATH=x:\xxx\
+set SDEFILE=%BASEPATH%connections\oracle19c\%DBENV%\GIS-%DBNAME%\bldg.sde
 set TARGETFC=BUILDING
-set TARGETLOGDIR=%BASEPATH%\geodatabase-scripts\logs\building_import\
-set TOILER=%BASEPATH%\geodatabase-toiler\
-set BUILDINGS=%BASEPATH%\geodatabase-buildings\
-set PYTHONPATH=%TOILER%\src\py;%BUILDINGS%
+set SOURCEFC=%BASEPATH%connections\oracle19c\prd\GIS-ditGSpd1\bldg.sde\BLDG.%TARGETFC%
+set EDITORS=xxx,xxx,xxx,xxx
+set VIEWERS=xxx,xxx
+set NOTIFY=xxx@xxx.xxx.xxx
+REM NOTIFY=x
+set NOTIFYFROM=xxx@xxx.xxx.xxx
+set SMTPFROM=xxx.xxx
+set TARGETLOGDIR=%BASEPATH%geodatabase-scripts\logs\building_import\
+set TOILER=%BASEPATH%geodatabase-toiler\
+set BUILDINGS=%BASEPATH%geodatabase-buildings\
+set PYTHONPATH=%TOILER%src\py;%BUILDINGS%
 set PROPY=c:\Progra~1\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe
+set PY27=C:\Python27\ArcGIS10.7\python.exe
 set BATLOG=%TARGETLOGDIR%building_import.log
 echo starting building import to target %TARGETFC% on %date% at %time% > %TARGETLOGDIR%building_import.log
 %PROPY% %BUILDINGS%delete.py %TARGETFC% && (
-  echo. deleted target %TARGETFC% on %date% at %time% >> %BATLOG%
+  echo. >> %BATLOG% && echo deleted target %TARGETFC% on %date% at %time% >> %BATLOG%
 ) || (
   %PROPY% %BUILDINGS%notify.py ": Failed to delete %TARGETFC% on %SDEFILE%" %NOTIFY% "building_import" && EXIT /B 1
 )  
@@ -53,7 +50,8 @@ echo starting building import to target %TARGETFC% on %date% at %time% > %TARGET
 ) 
 %PROPY% %BUILDINGS%qa.py %TARGETFC% && (
   echo. >> %BATLOG% && echo QAd target %TARGETFC% on %date% at %time% >> %BATLOG%
+  %PROPY% %BUILDINGS%notify.py "import and QA of %TARGETFC% on %SDEFILE%" %NOTIFY% "qa"
 ) || (
   %PROPY% %BUILDINGS%notify.py ": Failed to execute QA on %TARGETFC% on %SDEFILE%" %NOTIFY% "building_import" && EXIT /B 1
 ) 
-%PROPY% %BUILDINGS%notify.py "import and QA of %TARGETFC% on %SDEFILE%" %NOTIFY% "qa"
+
