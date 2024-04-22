@@ -7,7 +7,6 @@ from datetime import datetime
 import gdb
 import cx_sde
 
-
 def fetchsql(whichsql
             ,fcname):
     
@@ -146,9 +145,18 @@ def fetchsql(whichsql
         sql += " a.feature_code = 0 " \
              + " or a.feature_code is null "
 
-
     #print(sql)
     return sql 
+
+def qalogging(logfile
+             ,level=logging.DEBUG):
+    
+    qalogger = logging.getLogger(__name__)
+    qalogger.setLevel(level)
+    filehandler = logging.FileHandler(logfile)
+    qalogger.addHandler(filehandler)
+
+    return qalogger
 
              
 def main(targetgdb
@@ -156,7 +164,7 @@ def main(targetgdb
         ,sqlsoverride):
 
     synthetickey = 'doitt_id'
-    qareport = os.linesep
+    qareport = ""
 
     # new QA check to add?
     # 1. Add the name of the check to checksqls list (probably a column name)
@@ -187,9 +195,11 @@ def main(targetgdb
 
         if len(invalidids) > 0:
 
-            qareport = qareport + os.linesep \
-                    + 'invalid {0} for {1}(s): {2}'.format(checksql, synthetickey, os.linesep) \
-                    + os.linesep.join(f'     {invalidid}' for invalidid in invalidids)  
+            if len(qareport) > 0:
+                qareport = qareport + os.linesep
+
+            qareport = qareport + 'invalid {0} for {1}(s): {2}'.format(checksql, synthetickey, os.linesep) \
+                                + os.linesep.join(f'     {invalidid}' for invalidid in invalidids)  
     
     #print(qareport)     
     return qareport
@@ -213,8 +223,8 @@ if __name__ == '__main__':
                             ,'qa-{0}-{1}.log'.format(ptargetfcname, timestr))
 
     # encoding not available at this python encoding='utf-8'
-    logging.basicConfig(filename=targetlog
-                       ,level=logging.DEBUG)
+
+    qalogger = qalogging(targetlog)
 
     retqareport = main(ptargetgdb
                       ,ptargetfcname
@@ -222,8 +232,8 @@ if __name__ == '__main__':
 
     if len(retqareport) > 4:
 
-        # 4 allows for a pair of sloppy CRLFs
-        #QA does not notify. It QAs and writes the results
-        logging.error(retqareport)
+        #4 allows for a pair of sloppy CRLFs
+        #QA does not notify. It QAs 
+        qalogger.error(retqareport)
 
     
