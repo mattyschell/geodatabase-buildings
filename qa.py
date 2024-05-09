@@ -11,12 +11,13 @@ def fetchsql(whichsql
             ,fcname):
     
     synthetickey = 'doitt_id'
-    flagged4     = 'last_edited_user'
+    flag4        = 'last_edited_user'
+    flag4date    = """to_char(a.last_edited_date, 'Day Mon DD YYYY')"""
 
     versionedview = fcname + '_evw'
     
     sql = "select " \
-        + "a.{0} || ' (' || a.{1} || ')' ".format(synthetickey, flagged4) \
+        + "a.{0} || ' (' || a.{1} || ')' ".format(synthetickey, flag4) \
         + "from {0} a ".format(versionedview) \
         + "where " \
 
@@ -47,8 +48,9 @@ def fetchsql(whichsql
 
         sql = "select " \
             + "'DOITT_ID ' || a.{0} || ' | ".format(synthetickey) \
-            + " BIN ' || a.bin || ' | " \
-            + " (' || a.{0} || ')' ".format(flagged4) \
+            + "BIN ' || a.bin || ' | " \
+            + "' || a.{0} || ' | ".format(flag4) \
+            + "' || {0} ".format(flag4date) \
             + "from {0} a ".format(versionedview) \
             + "inner join " \
             + "   (select bin " \
