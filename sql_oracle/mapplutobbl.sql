@@ -21,14 +21,16 @@ BEGIN
          || '         from '
          || '            ' || condotable || ' b '
          || '         where '
-         || '             a.base_bbl = b.condo_base_bbl '
+         || '             REGEXP_LIKE(a.base_bbl, ''^[[:digit:]]{1,}$'') '
+         || '         and a.base_bbl = b.condo_base_bbl '
          || '         and a.mappluto_bbl <> b.condo_billing_bbl) '
          || 'where exists '
          || '   (select 1 '
          || '    from '
          || '        ' || condotable || ' c '
          || '     where '
-         || '         a.base_bbl = c.condo_base_bbl '
+         || '         REGEXP_LIKE(a.base_bbl, ''^[[:digit:]]{1,}$'') '
+         || '     and a.base_bbl = c.condo_base_bbl '
          || '     and a.mappluto_bbl <> c.condo_billing_bbl)';
     execute immediate psql;
     -- click save
