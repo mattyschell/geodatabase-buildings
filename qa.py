@@ -12,6 +12,7 @@ def fetchsql(whichsql
     
     synthetickey = 'doitt_id'
     flag4        = 'last_edited_user'
+    flag4datecol = 'last_edited_date'
     flag4date    = """to_char(a.last_edited_date, 'Day Mon DD YYYY')"""
 
     versionedview = fcname + '_evw'
@@ -102,10 +103,29 @@ def fetchsql(whichsql
     elif whichsql == 'duplicate_doitt_id':
 
         # https://github.com/mattyschell/geodatabase-buildings/issues/27
+        # https://github.com/mattyschell/geodatabase-buildings/issues/63
 
-        sql =  "select {0} from {1} ".format(synthetickey,versionedview) \
-             + "group by {0} ".format(synthetickey) \
-             + "having count(*) > 1 "
+        # select 
+        #    a.doitt_id, a.last_edited_user, to_char(a.last_edited_date, 'Day Mon DD YYYY')
+        # from
+        #    bldg.building_evw a 
+        # where (a.doitt_id, a.last_edited_date)
+        # in    (select doitt_id, max(last_edited_date) 
+        #        from bldg.building_evw
+        #        group by doitt_id  
+        #        having count(*) > 1)
+
+        # costs vs benefits of this substitution is not great
+        sql = " select " \
+            + " a.{0} || ' (' || a.{1} || ')' ".format(synthetickey, flag4) \
+            + " from {0} a ".format(versionedview) \
+            + " where " \
+            + " (a.{0}, a.{1}) ".format(synthetickey,flag4datecol) \
+            + " in ( " \
+            + " select {0}, max({1}) ".format(synthetickey,flag4datecol) \
+            + " from {0} ".format(versionedview) \
+            + " group by {0} ".format(synthetickey) \
+            + " having count(*) > 1 )"
 
     elif whichsql == 'name':
 
@@ -186,6 +206,7 @@ def main(targetgdb
                 ,'building_layer_extent'
                 ,'feature_code']
     
+    # wtf is this? must be for testing
     if set(sqlsoverride).issubset(set(checksqls)):
         checksqls = sqlsoverride
 
