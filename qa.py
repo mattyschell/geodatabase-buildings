@@ -104,28 +104,51 @@ def fetchsql(whichsql
 
         # https://github.com/mattyschell/geodatabase-buildings/issues/27
         # https://github.com/mattyschell/geodatabase-buildings/issues/63
+        # https://github.com/mattyschell/geodatabase-buildings/issues/65
 
-        # select 
-        #    a.doitt_id, a.last_edited_user, to_char(a.last_edited_date, 'Day Mon DD YYYY')
-        # from
-        #    bldg.building_evw a 
-        # where (a.doitt_id, a.last_edited_date)
-        # in    (select doitt_id, max(last_edited_date) 
-        #        from bldg.building_evw
-        #        group by doitt_id  
-        #        having count(*) > 1)
+        #WITH dupes AS (
+        #    SELECT 
+        #        doitt_id, 
+        #        MAX(last_edited_date) AS last_edited_date
+        #    FROM 
+        #        bldg.building_evw
+        #    GROUP BY 
+        #        doitt_id
+        #    HAVING 
+        #        COUNT(*) > 1 )
+        #SELECT 
+        #    a.doitt_id || ' (' ||  
+        #    a.last_edited_user || ') '
+        #FROM 
+        #    building_evw a
+        #JOIN 
+        #    dupes b
+        #ON 
+        #    a.doitt_id = b.doitt_id 
+        #AND a.last_edited_date = b.last_edited_date
 
-        # costs vs benefits of this substitution is not great
-        sql = " select " \
-            + " a.{0} || ' (' || a.{1} || ')' ".format(synthetickey, flag4) \
-            + " from {0} a ".format(versionedview) \
-            + " where " \
-            + " (a.{0}, a.{1}) ".format(synthetickey,flag4datecol) \
-            + " in ( " \
-            + " select {0}, max({1}) ".format(synthetickey,flag4datecol) \
-            + " from {0} ".format(versionedview) \
-            + " group by {0} ".format(synthetickey) \
-            + " having count(*) > 1 )"
+        # substitution costs arguably greater than benefits
+        sql = "WITH dupes AS (" \
+            + "    SELECT " \
+            + "       {0}, ".format(synthetickey) \
+            + "       MAX({0}) AS last_edited_date ".format(flag4datecol) \
+            + "    FROM " \
+            + "       {0} ".format(versionedview) \
+            + "    GROUP BY " \
+            + "       {0} ".format(synthetickey) \
+            + "    HAVING " \
+            + "        COUNT(*) > 1 ) " \
+            + " SELECT " \
+            + "    a.{0} || ' (' ||  ".format(synthetickey) \
+            + "    a.{0} || ') ' ".format(flag4) \
+            + " FROM " \
+            + "     {0} a ".format(versionedview) \
+            + " JOIN " \
+            + "    dupes b " \
+            + " ON " \
+            + "     a.{0} = b.{1} ".format(synthetickey,synthetickey) \
+            + " AND " \
+            + "    a.{0} = b.{1} ".format(flag4datecol,flag4datecol)
 
     elif whichsql == 'name':
 
@@ -224,7 +247,9 @@ def main(targetgdb
             qareport = qareport + 'invalid {0} for {1}(s): {2}'.format(checksql, synthetickey, os.linesep) \
                                 + os.linesep.join(f'     {invalidid}' for invalidid in invalidids)  
     
+    #print("qa report ------->")
     #print(qareport)     
+    #print("<------- qa report")
     return qareport
 
 
