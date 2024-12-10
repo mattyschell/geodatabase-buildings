@@ -190,6 +190,11 @@ def fetchsql(whichsql
         sql += " a.feature_code = 0 " \
              + " or a.feature_code is null "
 
+    elif whichsql == 'height_roof': 
+
+        sql += "a.height_roof IS NULL "
+
+
     #print(sql)
     return sql 
 
@@ -227,7 +232,8 @@ def main(targetgdb
                 ,'base_bbl'
                 ,'mappluto_bbl'
                 ,'building_layer_extent'
-                ,'feature_code']
+                ,'feature_code'
+                ,'height_roof']
     
     # wtf is this? must be for testing
     if set(sqlsoverride).issubset(set(checksqls)):
