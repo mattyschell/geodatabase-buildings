@@ -153,9 +153,13 @@ def fetchsql(whichsql
     elif whichsql == 'name':
 
         # https://github.com/mattyschell/geodatabase-buildings/issues/29
+        # https://github.com/mattyschell/geodatabase-buildings/issues/70
+        # some valid names 
+        #    Phil "Scooter" Rizzuto Park Public Restroom
+        #    Belson Hall/Finley Hall
 
-        sql += "    upper(a.name) like '%NULL%' " \
-             +  "or a.name = ' ' "
+        sql += """ REGEXP_LIKE(a.name, '^ $') or """ \
+               """ REGEXP_LIKE(a.name, CHR(10) || '|' ||  CHR(13) || '|null|no name','i')"""
 
     elif whichsql == 'bin_mismatch_bbl':
 
@@ -193,7 +197,6 @@ def fetchsql(whichsql
     elif whichsql == 'height_roof': 
 
         sql += "a.height_roof IS NULL "
-
 
     #print(sql)
     return sql 
