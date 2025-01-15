@@ -61,10 +61,12 @@ def fetchsql(whichsql
             + "on dups.bin = a.bin " \
             + "where a.bin not in (1000000,2000000,3000000,4000000,5000000) "
 
-    elif whichsql == 'construction_year':
+    elif whichsql == 'construction_year' \
+    or   whichsql == 'demolition_year':
 
-        sql += "    a.construction_year < 1626 " \
-             +  "or a.construction_year > ({0} + 1) ".format(time.strftime("%Y"))
+        sql += "    a.{0} < 1626 ".format(whichsql) \
+             +  "or a.{0} > ({1} + 1) ".format(whichsql
+                                              ,time.strftime("%Y"))
 
     elif whichsql == 'geometric curves':
 
@@ -214,7 +216,7 @@ def qalogging(logfile
              
 def main(targetgdb
         ,targetfcname
-        ,sqlsoverride):
+        ,sqlsoverride=None):
 
     synthetickey = 'doitt_id'
     qareport = ""
@@ -238,11 +240,15 @@ def main(targetgdb
                 ,'feature_code'
                 ,'height_roof']
     
-    # wtf is this? must be for testing
-    if set(sqlsoverride).issubset(set(checksqls)):
+    # reminder that building_historic qa passes through here
+    # shape,demolition_year
+
+    if sqlsoverride:
         checksqls = sqlsoverride
 
     for checksql in checksqls:
+
+        #print("checking {0}".format(checksql))
 
         invalidids = cx_sde.selectacolumn(targetgdb.sdeconn
                                          ,fetchsql(checksql
@@ -267,7 +273,7 @@ if __name__ == '__main__':
     ptargetfcname  = sys.argv[1]
 
     if len(sys.argv) == 2:
-        psqlsoverride = 'no'
+        psqlsoverride = None
     else:
         # optionally pass in a subset of the checksqls above
         # use this for building_historic where we enforce few checks
