@@ -31,23 +31,45 @@ We plan to migrate much of this repository to [geodatabase-buildings-automation]
 
 1. Drop building.condo_flags column (use delete field geoprocessing tool)
 2. Drop building.status column
+5. Drop building.addressable column
 3. Drop building_historic.condo_flags column
 4. Drop building_historic.status column
-5. Drop building.addressable column
 6. Drop building_historic.addressable column 
-7. Delete (defunct now) dBldgStatus domain
-8. Remove from dBldgModifyType (last_status_type)
-   INVESTIGATE DEMOLITION
-   DEMOLITION
-   GEOMETRY
-   INVESTIGATE CONSTRUCTION
-   CORRECTION
-   MARKED FOR DEMOLITION
-   INITIALIZATION
-9. Create new domain dBldgHistLastStatusType
-   Demolition
-   Alteration
+7. Delete dBldgStatus domain (defunct - applied to status)  
+8. Remove values from dBldgModifyType (applies to last_status_type)
+   1. investigate demolition
+   2. demolition
+   3. geometry
+   4. investigate construction
+   5. correction
+   6. marked for demolition
+   7. initialization
+9. Create new domain dBldgHistLastStatusType. 
+   1. demolition
+   2. alteration
 10. Apply dBldgHistLastStatusType to building_historic.last_status_type
+11. Alter building types (see sql_oracle\sql_maintenance\springcleaning.sql)
+   1. Backup and truncate building
+   2. Alter building.bin data type to number (precision 7 scale 0)
+   3. Alter building.base_bbl data type to Long (precision 10 scale 0)
+   4. Alter building.mappluto_bbl data type to Long (precision 10 scale 0)
+   5. Alter building.height_roof (precision 4 scale 0)
+   6. Alter building.construction_year (precision 4 scale 0)
+   7. Alter building.ground_elevation (precision 4 scale 0)
+   8. Alter building.alteration_year (precision 4 scale 0)
+   9. Restore data in building
+12. Alter building_historic types (sql_oracle\sql_maintenance\springcleaning.sql)
+   1. Backup and truncate building_historic
+   2. Alter building_historic.bin data type to number (precision 7 scale 0)
+   3. Alter building_historic.base_bbl data type to Long (precision 10 scale 0)
+   4. Alter building_historic.mappluto_bbl data type to Long (precision 10 scale 0)
+   5. Alter building_historic.height_roof (precision 4 scale 0)
+   6. Alter building_historic.construction_year (precision 4 scale 0)
+   7. Alter building_historic.ground_elevation (precision 4 scale 0)
+   8. Alter building_historic.alteration_year (precision 4 scale 0)
+   9. Alter building_historic.demolition_year (precision 4 scale 0)
+   10. Restore data in building_historic
+
 
 ## Other dependencies
 
@@ -55,31 +77,29 @@ We plan to migrate much of this repository to [geodatabase-buildings-automation]
 2. FME desktop ETL to create shapefiles for NYC Open Data
 3. Building import script
 4. building bbl qa process
+5. Notify direct connect users 
 
 
-## Parking Lot
+## Maybe
 
 1. Update building rows with defunct last_status_type
 2. Update building_historic rows with defunct last_status_type
-3. Building disallow NULL - can't be done on a populated feature class
-    BIN
-    BASE_BBL
-    CONSTRUCTION_YEAR
-    HEIGHT_ROOF
-    FEATURE_CODE
-    GROUND_ELEVATION
-4. Building_historic disallow null - can't be done on a populated feature class
-    DEMOLITION_YEAR
-5. Alter building.base_bbl data type to Long (precision 10 scale 0)
-6. Alter building_historic.base_bbl data type to Long (precision 10 scale 0)
-7. Alter building.mappluto_bbl data type to Long (precision 10 scale 0)
-8. Alter building_historic.mappluto_bbl data type to Long (precision 10 scale 0)
-9. Alter building.height_roof (precision 4 scale 0)
-10. Alter building_historic.height_roof (precision 4 scale 0)
-11. Alter building.construction_year (precision 4 scale 0)
-12. Alter building_historic.construction_year (precision 4 scale 0)
-13. Alter building_historic.demolition_year (precision 4 scale 0)
-14. Alter building.ground_elevation (precision 4 scale 0)
-15. Alter building_historic.ground_elevation (precision 4 scale 0)
-16. Alter building.alteration_year (precision 4 scale 0)
-17. Alter building_historic.alteration_year (precision 4 scale 0)
+
+## Hold on Nulls
+
+"Disabling nulls in the attribute table can only be done at the time of field creation." The geodatabase does not recognize alter table data definition SQL.
+
+We already have QA for these.  In the future we will enforce with attribute rules.
+
+1. Alter building not null constraints 
+    1. BIN
+    2. BASE_BBL
+    3. CONSTRUCTION_YEAR
+    4. HEIGHT_ROOF
+    5. FEATURE_CODE
+    6. GROUND_ELEVATION
+2. Alter building_historic not null constraints (springcleaning.sql) to disallow null
+    1. DEMOLITION_YEAR
+
+
+
