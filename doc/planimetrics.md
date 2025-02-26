@@ -210,6 +210,8 @@ Work in progress procedure we will use for the 2022 planimetrics delivered in th
 
 9. Supposedly new buildings
 
+    We did not do anything with these.
+
     Because of the timing of the planimetrics delivery most "new" buildings are actually old and we have probably added them. Resource permitting, begin with the features that are most likely to be useful.
 
     This example takes all planimetrics "New" buildings under construction that have no spatial relationship with existing buildings.  See [issue 46](https://github.com/mattyschell/geodatabase-buildings/issues/46) for discussion and images.
@@ -248,39 +250,58 @@ Work in progress procedure we will use for the 2022 planimetrics delivered in th
             touchsome);
     ```
 
-10. Probably demolished buildings
+10. Possibly demolished buildings
 
-    Any building that existed at the time of planimerics capture that was not retured to us in the delivery was likely demolished prior to 2022.  Subtract any footprints we have moved to building_historic.
+    We put a lot of effort into working on these.
 
-    Remove from the  list  
+    Any building that existed at the time of planimetrics capture that was not returned to us in the delivery was likely demolished prior to 2022.  Subtract any footprints we have moved to building_historic in the meantime.
 
-    * any buildings edited after we started using 2022 imagery
-    * garages
+    Also subtract from from the  list:  
+
+    * Any buildings edited after we started using 2022 imagery. Someone looked at these, it is not worth it to look at them again.
+    * Garages (for now)
+    * An ongoing list of possibly demolished buildings we have reviewed and decided no action is required
 
     ```sql
+    truncate table possibly_demolished;
+    --
+    insert into 
+        possibly_demolished
     select 
-        doitt_id
+        * 
     from 
         bldg.building_evw
-    where 
-        doitt_id < (select max(doitt_id) 
-                    from bldg.planimetrics_2022)
-    and last_edited_date < to_date('01-SEP-2022', 'DD-MON-YYYY')
-    and feature_code <> 5110
-    minus
-    select 
-        doitt_id 
-    from 
-        bldg.planimetrics_2022
-    where 
-        doitt_id is not null
-    minus 
-    select 
-        doitt_id 
-    from 
-        bldg.building_historic_evw
-    where 
-        doitt_id is not null  
+    where doitt_id in 
+        (select 
+            doitt_id
+        from 
+            building_evw
+        where 
+            doitt_id < (select max(doitt_id) 
+                        from bldg.planimetrics_2022)
+        and last_edited_date < to_date('01-SEP-2022', 'DD-MON-YYYY')
+        and feature_code <> 5110
+        minus
+        select 
+            doitt_id 
+        from 
+            planimetrics_2022
+        where 
+            doitt_id is not null
+        minus 
+        select 
+            doitt_id 
+        from 
+            building_historic_evw
+        where 
+            doitt_id is not null 
+        minus
+        select 
+            doitt_id 
+        from 
+            possibly_demolished_checked);    
+    --
+    commit;
     ``` 
 
     
