@@ -259,8 +259,9 @@ Work in progress procedure we will use for the 2022 planimetrics delivered in th
     Also subtract from from the  list:  
 
     * Any buildings edited after we started using 2022 imagery. Someone looked at these, it is not worth it to look at them again.
-    * Garages (for now)
-    * An ongoing list of possibly demolished buildings we have reviewed and decided no action is required
+    * Garages (for now).
+    * Parking, gas station canopies, auxiliary structures, and temporary structures.  Planimetrics 2022 did not collect these feature codes (for unclear reasons). Planimetrics removed these buildings from the delivery.  This looks like a demolition.
+    * An ongoing list of possibly demolished buildings we have reviewed and decided no action is required.
 
     ```sql
     truncate table possibly_demolished;
@@ -280,7 +281,7 @@ Work in progress procedure we will use for the 2022 planimetrics delivered in th
             doitt_id < (select max(doitt_id) 
                         from bldg.planimetrics_2022)
         and last_edited_date < to_date('01-SEP-2022', 'DD-MON-YYYY')
-        and feature_code <> 5110
+        and feature_code not in (5110, 1000, 1001, 1004, 1005)
         minus
         select 
             doitt_id 
