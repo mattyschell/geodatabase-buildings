@@ -60,6 +60,7 @@ BEGIN
          || '    a.mappluto_bbl = a.base_bbl '
          || 'where '
          || '    a.base_bbl <> a.mappluto_bbl '
+         || 'and not regexp_like(a.base_bbl, ''[A-Za-z[:space:]]'') '
          || 'and a.base_bbl not in (select '
          || '                           b.condo_base_bbl '
          || '                       from '
