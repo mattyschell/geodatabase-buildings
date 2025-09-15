@@ -62,7 +62,8 @@ def fetchsql(whichsql
             + "where a.bin not in (1000000,2000000,3000000,4000000,5000000) "
 
     elif whichsql == 'construction_year' \
-    or   whichsql == 'demolition_year':
+    or   whichsql == 'demolition_year' \
+    or   whichsql == 'alteration_year':
 
         sql += "    a.{0} < 1626 ".format(whichsql) \
              +  "or a.{0} > ({1} + 1) ".format(whichsql
@@ -104,53 +105,21 @@ def fetchsql(whichsql
 
     elif whichsql == 'duplicate_doitt_id':
 
+        # monkeypatch 20250502    
+        # keeping it. maintaining the SQL that reports other columns
+        # with duplicate doitt_ids is too problematic
+        sql = "select " \
+           +  "   a.{0} ".format(synthetickey) \
+           +  "from "  \
+           +  "   {0} a ".format(versionedview) \
+           +  "   group by " \
+           +  "   {0} ".format(synthetickey) \
+           +  "   having count(*) > 1 "
+
         # https://github.com/mattyschell/geodatabase-buildings/issues/27
         # https://github.com/mattyschell/geodatabase-buildings/issues/63
         # https://github.com/mattyschell/geodatabase-buildings/issues/65
-
-        #WITH dupes AS (
-        #    SELECT 
-        #        doitt_id, 
-        #        MAX(last_edited_date) AS last_edited_date
-        #    FROM 
-        #        bldg.building_evw
-        #    GROUP BY 
-        #        doitt_id
-        #    HAVING 
-        #        COUNT(*) > 1 )
-        #SELECT 
-        #    a.doitt_id || ' (' ||  
-        #    a.last_edited_user || ') '
-        #FROM 
-        #    building_evw a
-        #JOIN 
-        #    dupes b
-        #ON 
-        #    a.doitt_id = b.doitt_id 
-        #AND a.last_edited_date = b.last_edited_date
-
-        # substitution costs arguably greater than benefits
-        sql = "WITH dupes AS (" \
-            + "    SELECT " \
-            + "       {0}, ".format(synthetickey) \
-            + "       MAX({0}) AS last_edited_date ".format(flag4datecol) \
-            + "    FROM " \
-            + "       {0} ".format(versionedview) \
-            + "    GROUP BY " \
-            + "       {0} ".format(synthetickey) \
-            + "    HAVING " \
-            + "        COUNT(*) > 1 ) " \
-            + " SELECT " \
-            + "    a.{0} || ' (' ||  ".format(synthetickey) \
-            + "    a.{0} || ') ' ".format(flag4) \
-            + " FROM " \
-            + "     {0} a ".format(versionedview) \
-            + " JOIN " \
-            + "    dupes b " \
-            + " ON " \
-            + "     a.{0} = b.{1} ".format(synthetickey,synthetickey) \
-            + " AND " \
-            + "    a.{0} = b.{1} ".format(flag4datecol,flag4datecol)
+        # reopened 65 
 
     elif whichsql == 'name':
 
@@ -223,7 +192,7 @@ def main(targetgdb
 
     # new QA check to add?
     # 1. Add the name of the check to checksqls list (probably a column name)
-    # 2. Add the switch and sql whereclause in fetchsql above
+    # 2. Add the sql whereclause in fetchsql above
 
     checksqls = ['doitt_id'
                 ,'shape'
@@ -241,14 +210,12 @@ def main(targetgdb
                 ,'height_roof']
     
     # reminder that building_historic qa passes through here
-    # shape,demolition_year
+    # shape,demolition_year,alteration_year
 
     if sqlsoverride:
         checksqls = sqlsoverride
 
     for checksql in checksqls:
-
-        #print("checking {0}".format(checksql))
 
         invalidids = cx_sde.selectacolumn(targetgdb.sdeconn
                                          ,fetchsql(checksql
