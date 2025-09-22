@@ -161,13 +161,21 @@ def fetchsql(whichsql
         
     elif whichsql == 'feature_code': 
 
-        #https://github.com/mattyschell/geodatabase-buildings/issues/34
+        # https://github.com/mattyschell/geodatabase-buildings/issues/34
         sql += " a.feature_code = 0 " \
              + " or a.feature_code is null "
 
     elif whichsql == 'height_roof': 
 
         sql += "a.height_roof IS NULL "
+
+    elif whichsql == 'alteration_or_demolition_year': 
+
+        # https://github.com/mattyschell/geodatabase-buildings/issues/79
+        sql += "  ((a.last_status_type = 'Demolition' and demolition_year is null) " \
+               "or (last_status_type = 'Alteration' and alteration_year is null) " \
+               "or (demolition_year is not null and alteration_year is not null)) " \
+               "and last_edited_date > TRUNC(SYSDATE) - 1 "
 
     #print(sql)
     return sql 
@@ -193,7 +201,7 @@ def main(targetgdb
     # new QA check to add?
     # 1. Add the name of the check to checksqls list (probably a column name)
     # 2. Add the sql whereclause in fetchsql above
-
+    # or for a la carte pass in a comma-delimited list
     checksqls = ['doitt_id'
                 ,'shape'
                 ,'bin'
