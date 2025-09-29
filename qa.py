@@ -175,7 +175,7 @@ def fetchsql(whichsql
         sql += "  ((a.last_status_type = 'Demolition' and demolition_year is null) " \
                "or (last_status_type = 'Alteration' and alteration_year is null) " \
                "or (demolition_year is not null and alteration_year is not null)) " \
-               "and last_edited_date > TRUNC(SYSDATE) - 1 "
+               "and last_edited_date > TRUNC(SYSDATE) - 14 "
 
     #print(sql)
     return sql 
