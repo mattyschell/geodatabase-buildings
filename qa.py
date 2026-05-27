@@ -2,20 +2,41 @@ import sys
 import os
 import logging
 import time 
-from datetime import datetime
 
 import gdb
 import cx_sde
 
+BUILDING_CHECKSQLS = ['doitt_id'
+                     ,'shape'
+                     ,'bin'
+                     ,'duplicate bin'
+                     ,'construction_year'
+                     ,'geometric curves'
+                     ,'duplicate_doitt_id'
+                     ,'name'
+                     ,'bin_mismatch_bbl'
+                     ,'base_bbl'
+                     ,'mappluto_bbl'
+                     ,'building_layer_extent'
+                     ,'feature_code'
+                     ,'height_roof'
+                     ,'building_is_demolished']
+
 def fetchsql(whichsql
             ,fcname):
-    
+
+    whichsql = whichsql.strip()
+    fcname = fcname.strip()
+
     synthetickey = 'doitt_id'
     flag4        = 'last_edited_user'
-    flag4datecol = 'last_edited_date'
     flag4date    = """to_char(a.last_edited_date, 'Day Mon DD YYYY')"""
 
+    # for building qa this is building_evw
+    # for building_historic qa this is building_historic_evw
     versionedview = fcname + '_evw'
+    # when QAing building_evw we may join to historic
+    historicview = 'building_historic_evw'
     
     sql = "select " \
         + "a.{0} || ' (' || a.{1} || ')' ".format(synthetickey, flag4) \
@@ -153,7 +174,7 @@ def fetchsql(whichsql
         #      then mappluto_bbl should be the usual boro followed by 9 digits
         # all mappluto_bbls should be in the same boro as the base_bbl
         sql += """ (base_bbl <> mappluto_bbl """ \
-            +  """  and not regexp_like(mappluto_bbl, '^[1-5]\d{5}75\d{2}$') """ \
+            +  """  and not regexp_like(mappluto_bbl, '^[1-5]\\d{5}75\\d{2}$') """ \
             +  """  ) """ \
             + """ or not """ \
             + """    regexp_like(mappluto_bbl, '^[1-5][[:digit:]]{9}$') """ \
@@ -177,6 +198,25 @@ def fetchsql(whichsql
                "or (demolition_year is not null and alteration_year is not null)) " \
                "and last_edited_date > TRUNC(SYSDATE) - 14 "
 
+    elif whichsql == 'building_is_demolished':
+
+        # https://github.com/mattyschell/geodatabase-buildings/issues/81
+
+        if fcname.lower() != 'building':
+            raise ValueError('building_is_demolished QA only applies to building')
+
+        sql += (" exists ( "
+                 +  "   select 1 "
+                 +  "      from {0} h ".format(historicview)
+                 +  "   where h.doitt_id = a.doitt_id "
+                 +  "   and h.last_status_type = 'Demolition' "
+             +  "   and h.last_edited_date > TIMESTAMP '2026-05-26 00:00:00' "
+                 +  ") ")
+
+    else:
+
+        raise ValueError('unsupported QA check: {0}'.format(whichsql))
+               
     #print(sql)
     return sql 
 
@@ -185,6 +225,8 @@ def qalogging(logfile
     
     qalogger = logging.getLogger(__name__)
     qalogger.setLevel(level)
+    qalogger.handlers.clear()
+    qalogger.propagate = False
     filehandler = logging.FileHandler(logfile)
     qalogger.addHandler(filehandler)
 
@@ -197,31 +239,19 @@ def main(targetgdb
 
     synthetickey = 'doitt_id'
     qareport = ""
+    targetfcname = targetfcname.strip()
 
     # new QA check to add?
     # 1. Add the name of the check to checksqls list (probably a column name)
     # 2. Add the sql whereclause in fetchsql above
     # or for a la carte pass in a comma-delimited list
-    checksqls = ['doitt_id'
-                ,'shape'
-                ,'bin'
-                ,'duplicate bin'
-                ,'construction_year'
-                ,'geometric curves'
-                ,'duplicate_doitt_id'
-                ,'name'
-                ,'bin_mismatch_bbl'
-                ,'base_bbl'
-                ,'mappluto_bbl'
-                ,'building_layer_extent'
-                ,'feature_code'
-                ,'height_roof']
+    checksqls = BUILDING_CHECKSQLS
     
     # reminder that building_historic qa passes through here
     # shape,demolition_year,alteration_year
 
     if sqlsoverride:
-        checksqls = sqlsoverride
+        checksqls = [checksql.strip() for checksql in sqlsoverride if checksql.strip()]
 
     for checksql in checksqls:
 

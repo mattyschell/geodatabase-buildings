@@ -1,17 +1,15 @@
 # The NYC Buildings Maintenance Toilin'
 
-Code and helpers for maintaining New York City building footprints in a versioned ESRI Enterprise Geodatabase. Friends, this is our NYC buildings footprints in a versioned ESRI Enterprise Geodatabase toil, our rules, the trick is never to be afraid.
-
+Code and helpers for maintaining New York City building footprints in a versioned ESRI Enterprise Geodatabase. Friends, these are our buildings in a versioned ESRI Enterprise Geodatabase, our rules, the trick is never to be afraid.
 
 # Table of Contents
 
 1. [Dependencies](#Dependencies)
-2. [Import](#Import)
+2. [Import](#Import-Buildings)
 3. [Quality Assurance](#Quality-Assurance)
-4. [Export To GeoJSON](#Export-To-GeoJSON)
-5. [Execute Nightly Maintenance Tasks](#Execute-Nightly-Maintenance-Tasks)
-6. [Suggested Setup](#Suggested-Setup)
-7. [Attribute Metadata](#Attribute-Metadata)
+4. [Execute Nightly Maintenance Tasks](#Execute-Nightly-Maintenance-Tasks)
+5. [Suggested Setup](#Suggested-Setup)
+6. [Attribute Metadata](#Attribute-Metadata)
 
 ## Dependencies
 
@@ -19,7 +17,7 @@ Code and helpers for maintaining New York City building footprints in a versione
    * [geodatabase-toiler](https://github.com/mattyschell/geodatabase-toiler) on PYTHONPATH
 
 
-## Import 
+## Import Buildings
 
 ```bat
 > set SDEFILE=X:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
@@ -34,22 +32,6 @@ Code and helpers for maintaining New York City building footprints in a versione
 > set TARGETLOGDIR=X:\gis\geodatabase-scripts\logs\building_maintain
 > set PYTHONPATH=X:\geodatabase-toiler\src\py;X:\geodatabase-buildings
 > c:\Progra~1\ArcGIS\Pro\bin\Python\scripts\propy.bat qa.py BUILDING 
-```
-
-
-## Export To GeoJSON
-
-Additional Dependency: 
-
-   * [ogr2ogr](https://gdal.org/programs/ogr2ogr.html) on PATH
-
-Consider repeatedly dumping this file to a drive that supports previous versions
-or to somewhere cloudy.
-
-```bat
-> set SDEFILE=X:\GIS\Internal\Connections\oracle19c\dev\GIS-ditGSdv1\bldg.sde
-> set PYTHONPATH=X:\geodatabase-toiler\src\py;X:\geodatabase-buildings
-> c:\Progra~1\ArcGIS\Pro\bin\Python\scripts\propy.bat export.py BUILDING 
 ```
 
 ## Execute Nightly Maintenance Tasks

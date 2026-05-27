@@ -54,7 +54,7 @@ set SDEFILE=%BUILDINGSDEFILE%
     %PROPY% %BUILDINGS%notify.py ": Failed feature class maintenance of %BUILDINGFC% on %SDEFILE%" %NOTIFY% "building_maintain" && EXIT /B 1
 ) 
 echo. >> %BATLOG% && echo performing %BUILDINGFC% feature class QA on %date% at %time% >> %BATLOG%
-%PROPY% %BUILDINGS%qa.py %BUILDINGHISTORICFC% "shape,alteration_year,demolition_year" && (
+%PROPY% %BUILDINGS%qa.py %BUILDINGHISTORICFC% "shape,alteration_year,demolition_year,alteration_or_demolition_year" && (
     %PROPY% %BUILDINGS%notify.py ": QA of %BUILDINGHISTORICFC% on %SDEFILE%" %NOTIFY% "qa" "ERROR"
 ) || (
     %PROPY% %BUILDINGS%notify.py ": Failed QA of %BUILDINGHISTORICFC% on %SDEFILE%" %NOTIFY% "qa"

@@ -163,3 +163,5 @@ scratch/
 
 #avoid batch file checkins unless forced
 *.bat
+
+-local.bat
