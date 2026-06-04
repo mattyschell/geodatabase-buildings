@@ -26,9 +26,9 @@ if __name__ == '__main__':
  
     try:
         recnpostoutput = bldg_edit_version.reconcileandpost()
-    except:
-        logging.error('Failed reconcile and post of: {0}'.format(bldg_edit_version.versionname))        
-        #Failures should bounce out here, unhelpfully when there are conflicts
+    except Exception:
+        logging.exception('Failed reconcile and post of: {0}'.format(bldg_edit_version.versionname))
+        # Failures should bounce out here, including traceback details for diagnosis.
         exit(retval)
 
     if 'succeeded' in recnpostoutput.lower():
