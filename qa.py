@@ -6,6 +6,7 @@ import time
 import gdb
 import cx_sde
 
+# these are the default set of QA checks for buildings
 BUILDING_CHECKSQLS = ['doitt_id'
                      ,'shape'
                      ,'bin'
@@ -19,8 +20,7 @@ BUILDING_CHECKSQLS = ['doitt_id'
                      ,'mappluto_bbl'
                      ,'building_layer_extent'
                      ,'feature_code'
-                     ,'height_roof'
-                     ,'building_is_demolished']
+                     ,'height_roof']
 
 def fetchsql(whichsql
             ,fcname):
@@ -37,6 +37,7 @@ def fetchsql(whichsql
     versionedview = fcname + '_evw'
     # when QAing building_evw we may join to historic
     historicview = 'building_historic_evw'
+    buildingview = 'building_evw'
     
     sql = "select " \
         + "a.{0} || ' (' || a.{1} || ')' ".format(synthetickey, flag4) \
@@ -198,20 +199,21 @@ def fetchsql(whichsql
                "or (demolition_year is not null and alteration_year is not null)) " \
                "and last_edited_date > TRUNC(SYSDATE) - 14 "
 
-    elif whichsql == 'building_is_demolished':
+    elif whichsql == 'building_not_demolished':
 
         # https://github.com/mattyschell/geodatabase-buildings/issues/81
+        # https://github.com/mattyschell/geodatabase-buildings/issues/83
 
-        if fcname.lower() != 'building':
-            raise ValueError('building_is_demolished QA only applies to building')
-
-        sql += (" exists ( "
-                 +  "   select 1 "
-                 +  "      from {0} h ".format(historicview)
-                 +  "   where h.doitt_id = a.doitt_id "
-                 +  "   and h.last_status_type = 'Demolition' "
-             +  "   and h.last_edited_date > TIMESTAMP '2026-05-26 00:00:00' "
-                 +  ") ")
+        if fcname.lower() != 'building_historic':
+            raise ValueError('building_not_demolished QA only applies to building_historic')
+        
+        sql += ("   a.last_status_type = 'Demolition' "
+            + " and a.last_edited_date > TIMESTAMP '2026-05-26 00:00:00' "
+            + " and exists ( "
+            + "     select 1 "
+            + "     from {0} b ".format(buildingview)  
+            + "     where b.doitt_id = a.doitt_id "
+            + "     ) ")
 
     else:
 
@@ -244,7 +246,8 @@ def main(targetgdb
     # new QA check to add?
     # 1. Add the name of the check to checksqls list (probably a column name)
     # 2. Add the sql whereclause in fetchsql above
-    # or for a la carte pass in a comma-delimited list
+    # 3. For a la carte pass in a comma-delimited list
+    # 4. A la carte includes some not in the list - historic only
     checksqls = BUILDING_CHECKSQLS
     
     # reminder that building_historic qa passes through here

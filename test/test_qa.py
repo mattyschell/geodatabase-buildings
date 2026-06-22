@@ -58,22 +58,22 @@ class QaTestCase(unittest.TestCase):
                         ,0
                         ,'qa.py exited with {0}'.format(result.returncode))
 
-    def test_fetchsql_building_is_demolished_requires_live_building(self):
+    def test_fetchsql_building_not_demolished_requires_historic(self):
 
         qa = self.import_qa_module()
 
         with self.assertRaises(ValueError):
-            qa.fetchsql('building_is_demolished', 'building_historic')
+            qa.fetchsql('building_not_demolished', 'building')
 
-    def test_fetchsql_building_is_demolished_targets_historic_view(self):
+    def test_fetchsql_building_not_demolished_targets_historic_with_live_join(self):
 
         qa = self.import_qa_module()
 
-        sql = qa.fetchsql('building_is_demolished', 'building')
+        sql = qa.fetchsql('building_not_demolished', 'building_historic')
 
-        self.assertIn('from building_evw a', sql)
-        self.assertIn('from building_historic_evw h', sql)
-        self.assertIn("h.last_status_type = 'Demolition'", sql)
+        self.assertIn('from building_historic_evw a', sql)
+        self.assertIn('from building_evw b', sql)
+        self.assertIn("a.last_status_type = 'Demolition'", sql)
 
     def test_fetchsql_rejects_unknown_checks(self):
 
