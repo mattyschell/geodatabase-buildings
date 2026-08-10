@@ -11,6 +11,11 @@ class QaTestCase(unittest.TestCase):
     @classmethod
     def import_qa_module(cls):
 
+        repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        if repo_root not in sys.path:
+            sys.path.insert(0, repo_root)
+
         sys.modules['gdb'] = types.SimpleNamespace()
         sys.modules['cx_sde'] = types.SimpleNamespace()
 
@@ -74,6 +79,16 @@ class QaTestCase(unittest.TestCase):
         self.assertIn('from building_historic_evw a', sql)
         self.assertIn('from building_evw b', sql)
         self.assertIn("a.last_status_type = 'Demolition'", sql)
+
+    def test_fetchsql_last_status_type_filter(self):
+
+        qa = self.import_qa_module()
+
+        sql = qa.fetchsql('last_status_type', 'building')
+
+        self.assertIn('a.last_status_type not in', sql)
+        self.assertIn("'Investigate Demolition'", sql)
+        self.assertIn('and trim(a.last_status_type) is not null', sql)
 
     def test_fetchsql_rejects_unknown_checks(self):
 

@@ -7,6 +7,7 @@ import gdb
 import cx_sde
 
 # these are the default set of QA checks for buildings
+# building_historic passes in its own comma-delimited list
 BUILDING_CHECKSQLS = ['doitt_id'
                      ,'shape'
                      ,'bin'
@@ -214,6 +215,26 @@ def fetchsql(whichsql
             + "     from {0} b ".format(buildingview)  
             + "     where b.doitt_id = a.doitt_id "
             + "     ) ")
+
+    elif whichsql == 'last_status_type':
+
+        # https://github.com/mattyschell/geodatabase-buildings/issues/84
+
+        sql += """ a.last_status_type not in
+              ( 'Alteration'
+               ,'Constructed'
+               ,'Correction'
+               ,'Demolition'
+               ,'Geometry'
+               ,'Initialization'
+               ,'Investigate Construction'
+               ,'Investigate Demolition'
+               ,'Marked for Construction'
+               ,'Marked for Demolition'
+               ,'Merged'
+               ,'Split'
+              )
+              and trim(a.last_status_type) is not null """
 
     else:
 

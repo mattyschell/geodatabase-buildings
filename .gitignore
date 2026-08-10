@@ -165,3 +165,6 @@ scratch/
 *.bat
 
 -local.bat
+
+*.xlsx
+*.code-workspace
