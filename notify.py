@@ -6,6 +6,8 @@ import smtplib
 import socket
 from email.message import EmailMessage
 
+QA_PROTOCOL_URL = "https://github.com/mattyschell/geodatabase-buildings/blob/main/doc/buildings_qa_protocols.md"
+
 
 def getlogfile(logdir
               ,logtype):
@@ -51,6 +53,13 @@ if __name__ == "__main__":
     msg['Subject'] = content
     content += 'at {0} {1}'.format(datetime.datetime.now()
                                   ,os.linesep)
+
+    is_qa_notification = plogtype.strip().lower() == 'qa' \
+        and 'qa' in notification.strip().lower()
+
+    if is_qa_notification:
+        content += '\nQA protocols: {0}{1}'.format(QA_PROTOCOL_URL
+                                                  ,os.linesep)
 
     content += '\n\n' + getlogfile(logdir
                                   ,plogtype)   
