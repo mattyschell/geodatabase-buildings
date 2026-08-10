@@ -49,20 +49,28 @@ if __name__ == "__main__":
 
     # notification is like "importing buildings onto dev.sde"
 
+    logfile_content = getlogfile(logdir
+                                ,plogtype)
+
     content  = 'Completed {0} '.format(notification)
     msg['Subject'] = content
     content += 'at {0} {1}'.format(datetime.datetime.now()
                                   ,os.linesep)
 
-    is_qa_notification = plogtype.strip().lower() == 'qa' \
-        and 'qa' in notification.strip().lower()
+    notification_lc = notification.strip().lower()
+    logfile_lc = logfile_content.lower()
 
-    if is_qa_notification:
+    is_qa_notification = plogtype.strip().lower() == 'qa'
+    has_qa_findings = ('failed' in notification_lc
+                       or 'error' in notification_lc
+                       or 'invalid ' in logfile_lc
+                       or 'error' in logfile_lc)
+
+    if is_qa_notification and has_qa_findings:
         content += '\nQA protocols: {0}{1}'.format(QA_PROTOCOL_URL
                                                   ,os.linesep)
 
-    content += '\n\n' + getlogfile(logdir
-                                  ,plogtype)   
+    content += '\n\n' + logfile_content
     
     msg.set_content(content)    
     msg['From'] = emailfrom

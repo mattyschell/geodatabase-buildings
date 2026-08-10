@@ -1,29 +1,5 @@
 # Buildings Quality Assurance Protocols
 
-## QA Quick Reference
-
-| QA Notification | BUILDING | BUILDING_HISTORIC |
-|---|---|---|
-| alteration_or_demolition_year |  | X |
-| alteration_year |  | X |
-| base_bbl | X |  |
-| bin | X |  |
-| bin_mismatch_bbl | X |  |
-| building_layer_extent | X |  |
-| building_not_demolished |  | X |
-| construction_year | X |  |
-| demolition_year |  | X |
-| doitt_id | X |  |
-| duplicate bin | X |  |
-| duplicate_doitt_id | X |  |
-| feature_code | X |  |
-| geometric curves | X |  |
-| height_roof | X |  |
-| last_status_type |  | X |
-| mappluto_bbl | X |  |
-| name | X |  |
-| shape | X | X |
-
 ## QA Description
 
 | QA Notification | Description |
@@ -47,3 +23,27 @@
 | mappluto_bbl | mappluto_bbl is not a valid format, not a valid condo pattern (10 digits with 75 in places 7 and 8) when different from base_bbl, or the mappluto_bbl first digit does not match the BIN. |
 | name | Name is blank-space only or contains invalid characters. |
 | shape | Geometry validation fails or the building is a multipolygon |
+
+## QA Matrix
+
+| QA Notification | BUILDING | BUILDING_HISTORIC |
+|---|---|---|
+| alteration_or_demolition_year |  | X |
+| alteration_year |  | X |
+| base_bbl | X |  |
+| bin | X |  |
+| bin_mismatch_bbl | X |  |
+| building_layer_extent | X |  |
+| building_not_demolished |  | X |
+| construction_year | X |  |
+| demolition_year |  | X |
+| doitt_id | X |  |
+| duplicate bin | X |  |
+| duplicate_doitt_id | X |  |
+| feature_code | X |  |
+| geometric curves | X |  |
+| height_roof | X |  |
+| last_status_type |  | X |
+| mappluto_bbl | X |  |
+| name | X |  |
+| shape | X | X |
