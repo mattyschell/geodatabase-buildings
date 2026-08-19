@@ -1,5 +1,7 @@
 # QA building_not_demolished: Corrections
 
+## Motivation
+
 We added [QA for demolished buildings](https://github.com/mattyschell/geodatabase-buildings/issues/81) that mistakenly also remain in live buildings.  Many such cases. 
 
 We enabled the QA only for freshly edited rows. We will not allow this to ever happen again. But the past is the past.
@@ -11,6 +13,8 @@ invalid building_not_demolished for doitt_id(s):
 
      356283 (MALTAGOYA)
 ```
+
+## Procedure
 
 Use this procedure to update the duplicate building_historic doitt_id to a new doitt_id.  We will also track the updates here just in case the history helps someone.
 
@@ -26,6 +30,8 @@ Run repeatedly for one or more doitt_ids. THEN MANUALLY RUN reconcile/post for B
 ```
 sqlplus bldg/xxxxxxx@xxxxxxxx @correct_building_not_demolished.sql
 ```
+
+## History
 
 | old doitt_id | new doitt_id |
 | --- | --- |
