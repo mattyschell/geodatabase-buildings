@@ -7,7 +7,6 @@ import gdb
 import cx_sde
 
 # these are the default set of QA checks for buildings
-# building_historic passes in its own comma-delimited list
 BUILDING_CHECKSQLS = ['doitt_id'
                      ,'shape'
                      ,'bin'
@@ -22,6 +21,15 @@ BUILDING_CHECKSQLS = ['doitt_id'
                      ,'building_layer_extent'
                      ,'feature_code'
                      ,'height_roof']
+
+# these are the default set of QA checks for buildings
+BUILDING_HISTORIC_CHECKSQLS = ['shape'
+                              ,'alteration_year'
+                              ,'demolition_year'
+                              ,'alteration_or_demolition_year'
+                              ,'building_not_demolished'
+                              ,'last_status_type'
+                              ,'building_double_demolished']
 
 def fetchsql(whichsql
             ,fcname):
@@ -236,6 +244,20 @@ def fetchsql(whichsql
               )
               and trim(a.last_status_type) is not null """
 
+    elif whichsql == 'building_double_demolished':
+
+        if fcname.lower() != 'building_historic':
+            raise ValueError('building_double_demolished QA only applies to building_historic')
+
+        sql += "a.doitt_id in ( " \
+            + "select doitt_id " \
+            + "from bldg.building_historic_evw " \
+            + "where doitt_id <> 0 " \
+            + "  and last_status_type = 'Demolition' " \
+            + "  and last_edited_date > TIMESTAMP '2026-08-25 00:00:00' " \
+            + "  group by doitt_id, last_edited_user " \
+            + "  having count(*) > 1) "
+
     else:
 
         raise ValueError('unsupported QA check: {0}'.format(whichsql))
@@ -269,11 +291,12 @@ def main(targetgdb
     # 2. Add the sql whereclause in fetchsql above
     # 3. For a la carte pass in a comma-delimited list
     # 4. A la carte includes some not in the list - historic only
-    checksqls = BUILDING_CHECKSQLS
+    if targetfcname.lower() == 'building':
+        checksqls = BUILDING_CHECKSQLS
+    elif targetfcname.lower() == 'building_historic':
+        checksqls = BUILDING_HISTORIC_CHECKSQLS
     
-    # reminder that building_historic qa passes through here
-    # shape,demolition_year,alteration_year
-
+    # no longer using this option in real world automated maintenance
     if sqlsoverride:
         checksqls = [checksql.strip() for checksql in sqlsoverride if checksql.strip()]
 

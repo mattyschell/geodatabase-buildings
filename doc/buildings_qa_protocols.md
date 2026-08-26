@@ -11,6 +11,7 @@
 | bin_mismatch_bbl | BIN first digit does not match base_bbl first digit. |
 | building_layer_extent | This is a dataset-wide QA indicating that the layer extent in the geodatabase is wacky. |
 | building_not_demolished | In BUILDING_HISTORIC: last_status_type is Demolition (after 2026-05-26) but the same doitt_id still exists in BUILDING. ([correction script](../sql_oracle/sql_maintenance/building_not_demolished/README.md#procedure))|
+| building_double_demolished | In BUILDING_HISTORIC: doitt_id appears two or more times with last_status_type 'demolition.' Only applied to edits made in 2026 or later | 
 | construction_year | construction_year is before 1626 or greater than current year plus 1. |
 | demolition_year | demolition_year is before 1626 or greater than current year plus 1. |
 | doitt_id | doitt_id is null or 0. |

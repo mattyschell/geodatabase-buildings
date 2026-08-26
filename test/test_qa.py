@@ -97,5 +97,24 @@ class QaTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             qa.fetchsql('not_a_real_check', 'building')
 
+    def test_fetchsql_building_double_demolished_requires_historic(self):
+
+        qa = self.import_qa_module()
+
+        with self.assertRaises(ValueError):
+            qa.fetchsql('building_double_demolished', 'building')
+
+    def test_fetchsql_building_double_demolished_targets_historic(self):
+
+        qa = self.import_qa_module()
+
+        sql = qa.fetchsql('building_double_demolished', 'building_historic')
+
+        self.assertIn('from building_historic_evw a', sql)
+        self.assertIn('from bldg.building_historic_evw', sql)
+        self.assertIn("last_status_type = 'Demolition'", sql)
+        self.assertIn('group by doitt_id, last_edited_user', sql)
+        self.assertIn('having count(*) > 1', sql)
+
 if __name__ == '__main__':
     unittest.main()
