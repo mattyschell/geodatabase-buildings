@@ -291,12 +291,13 @@ def main(targetgdb
     # 2. Add the sql whereclause in fetchsql above
     # 3. For a la carte pass in a comma-delimited list
     # 4. A la carte includes some not in the list - historic only
-    if targetfcname.lower() == 'building':
-        checksqls = BUILDING_CHECKSQLS
-    elif targetfcname.lower() == 'building_historic':
+    if targetfcname.lower() == 'building_historic':
         checksqls = BUILDING_HISTORIC_CHECKSQLS
+    else:
+        checksqls = BUILDING_CHECKSQLS
     
     # no longer using this option in real world automated maintenance
+    # effectively: use a subset of valid QA for this feature class
     if sqlsoverride:
         checksqls = [checksql.strip() for checksql in sqlsoverride if checksql.strip()]
 
