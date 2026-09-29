@@ -3,7 +3,6 @@ import datetime
 import glob
 import os
 import smtplib
-import socket
 from email.message import EmailMessage
 
 QA_PROTOCOL_URL = "https://github.com/mattyschell/geodatabase-buildings/blob/main/doc/buildings_qa_protocols.md"
@@ -66,11 +65,11 @@ if __name__ == "__main__":
                        or 'invalid ' in logfile_lc
                        or 'error' in logfile_lc)
 
+    content += '\n\n' + logfile_content
+
     if is_qa_notification and has_qa_findings:
         content += '\nQA protocols: {0}{1}'.format(QA_PROTOCOL_URL
                                                   ,os.linesep)
-
-    content += '\n\n' + logfile_content
     
     msg.set_content(content)    
     msg['From'] = emailfrom
@@ -79,17 +78,14 @@ if __name__ == "__main__":
     # if a string is passed to sendmail it is treated as a list with one element!
     msg['To'] = pemails
 
-    if  (pchecklogfor != 'nothing' and pchecklogfor in content) \
+    if  (pchecklogfor != 'nothing' and pchecklogfor in logfile_content) \
     or   pchecklogfor == 'nothing':
         
-        smtp = smtplib.SMTP(smtpfrom)
-
-        try:
-            smtp.sendmail(msg['From']
-                         ,msg['To'].split(",")
-                         ,msg.as_string())
-        except smtplib.SMTPRecipientsRefused as e:
-            print("\n notify.py - Email not sent: relaying denied.")
-            print(" notify.py - This is expected from desktop environments.\n")
- 
-        smtp.quit()
+        with smtplib.SMTP(smtpfrom) as smtp:
+            try:
+                smtp.sendmail(msg['From']
+                             ,msg['To'].split(",")
+                             ,msg.as_string())
+            except smtplib.SMTPRecipientsRefused as e:
+                print("\n notify.py - Email not sent: relaying denied.")
+                print(" notify.py - This is expected from desktop environments.\n")
