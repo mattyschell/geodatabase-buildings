@@ -18,7 +18,7 @@ invalid building_not_demolished for doitt_id(s):
 
 Use this procedure to update the duplicate building_historic doitt_id to a new doitt_id.  We will also track the updates here just in case the history helps someone.
 
-This must run as BLDG to access the sequence. It will:
+This is currently set up to run as BLDG. It will:
 
 1. Create a version named BLDGNOTDEMOLISHED if it doesnt already exist
 2. Prompt for the duplicate doitt_id (reported in QA). 
@@ -100,3 +100,8 @@ sqlplus bldg/xxxxxxx@xxxxxxxx @correct_building_not_demolished.sql
 | 395646 | 1307074 |
 | 87735 | 1307075 |
 | 85251 | 1307076 |
+| 600327 | 1307119 |
+| 133310 | 1307211 |
+| 450110 | 1307212 |
+| 105183 | 1307213 |
+| 33488 | 1307214 |
