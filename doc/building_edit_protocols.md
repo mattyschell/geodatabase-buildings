@@ -211,13 +211,13 @@ Options > Application > Table > (check) "Hide the 'Click to add new row' option 
 
 Match the building footprint source SRID: `2263`.
 
-![ArcGIS Pro map coordinate system set to NAD 1983 StatePlane New York Long Isl FIPS 3104 (US Feet)](Buildings_Edit_Protocols_images/map-coordinate-system.png)
+![ArcGIS Pro map coordinate system set to NAD 1983 StatePlane New York Long Isl FIPS 3104 (US Feet)](building_edit_protocols_images/map-coordinate-system.png)
 
 ### 5. Transformation Path
 
 Data stored in Web Mercator is based on the WGS84 datum. Use this transformation path to convert from WGS84 to NAD83. This transformation path will apply to all WGS84 layers (orthophoto services and ArcGIS Online).
 
-![ArcGIS Pro transformation path set to WGS 1984 (ITRF00) To NAD 1983](Buildings_Edit_Protocols_images/transformation-path.png)
+![ArcGIS Pro transformation path set to WGS 1984 (ITRF00) To NAD 1983](building_edit_protocols_images/transformation-path.png)
 
 ### 6. Duplicate DOITT_IDs
 
