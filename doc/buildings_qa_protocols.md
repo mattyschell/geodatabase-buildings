@@ -19,7 +19,7 @@
 | duplicate_doitt_id | doitt_id occurs on more than one record. |
 | feature_code | feature_code is 0 or null. |
 | geometric curves | Geometry contains curved elements. |
-| height_roof | height_roof is null. |
+| height_roof | height_roof is null, negative, or greater than 1700. |
 | last_status_type | last_status_type is nonblank and is not in the allowed status list. |
 | mappluto_bbl | mappluto_bbl is not 10 digits starting with 1 through 5; differs from base_bbl without having 75 in digits 7 and 8; or has a first digit that differs from BIN. |
 | name | Name is a single space or contains a newline, carriage return, "null", or "no name" (case-insensitive). |
