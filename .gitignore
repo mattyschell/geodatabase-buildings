@@ -161,8 +161,9 @@ scratch/
 *.shp.xml
 *.shx
 
-#avoid batch file checkins unless forced
+# Only allow batch files whose names start with sample-
 *.bat
+!sample*.bat
 
 -local.bat
 

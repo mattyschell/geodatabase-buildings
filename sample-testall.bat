@@ -16,3 +16,5 @@ if exist "%PYTHON1%" (
 ) 
 CALL %PROPY% .\test\test_qa.py
 CALL %PROPY% .\test\test_notify.py
+rem fully mocked
+CALL %PROPY% .\test\test_fetch_building_archive.py

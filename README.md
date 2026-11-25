@@ -49,6 +49,34 @@ Update the environmental variables at the top of this batch file as needed.
 > sample_maintain.bat 
 ```
 
+## Generate Archive
+
+This is motivated by a desire to comply with open data archiving requirements. Input a date, get a snapshot of the featureclass at that date.
+
+The inputs to fetch_building_archive.py are
+
+1. Featureclass
+2. Snapshot date in YYYYMMDD format (snapshot will be at midnight UTC; future UTC dates are rejected)
+3. Existing output directory
+
+The output will be named like FEATURECLASS_YYYYMMDD.shp, without the owner
+prefix (for example, BUILDING_HISTORIC_20260101.shp). Existing output is not
+overwritten.
+
+The source must have geodatabase archiving enabled and retained history for the
+requested date. Native attributes and projection are retained, subject to shapefile limitations (including 10-character field names, loss of time components in date fields, and limited null support). It does not reproduce NYC Open Data's schema or WGS84 projection.
+
+Archives exclude defunct columns `last_edited_user`, `created_user`, `addressable`, `status`, and `condo_flags`. Names are matched case-insensitively against source fields
+before shapefile field-name truncation; missing columns are ignored.
+`alteration_year` is also excluded from BUILDING archives but retained in
+BUILDING_HISTORIC archives.
+
+Copy out and update the environmental variables at the top of [sample_building_archive.bat](geodatabase-scripts/sample_building_archive.bat).
+
+```bat
+> sample_building_archive.bat 
+```
+
 ## Suggested Setup
 
 Copy the sample batch files out of geodatabase-buildings\geodatabase-scripts
